@@ -1,0 +1,102 @@
+.footer {
+    background-color: #0b1a31;
+    color: #fff;
+    padding: 30px 0;
+}
+.announcement-navbar{
+    background-color: #0b1a31;
+}
+
+#second-nav-items a:hover{
+    color: #e96b56;
+}
+
+#second-nav-items a{
+    color: #0a3069;
+    font-weight: bold;
+}
+.footer-info p,
+.footer-links a {
+    color: #fff;
+}
+
+.footer-info h3,
+.footer-links h4 {
+    color: #fff;
+}
+
+.footer-links a {
+    text-decoration: none;
+}
+
+.footer-links a:hover {
+    color: #e96b56;
+}
+
+.footer-top {
+    padding: 50px 0;
+}
+
+.form-search-bar .form-control {
+    border-radius: 50px;
+}
+
+.form-search-bar .btn {
+    border-radius: 50px;
+    background-color: #e96b56;
+    color: #fff;
+    transition: background-color 0.3s;
+}
+
+.form-search-bar .btn:hover {
+    background-color: #e6573f;
+}
+
+/* progress css */
+
+
+.progress-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 50px;
+}
+
+.progress-circle {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background-color: transparent;
+    border: 10px solid  #e96b56;
+    border-left-color: #0b355d;
+    transform: rotate(0deg);
+    margin: 20px;
+}
+
+.progress-circle .inner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    color:  #e96b56;
+    font-size: 24px;
+}
+
+.progress-title {
+    text-align: center;
+    margin-top: 15px;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    color: #0b355d;
+    font-size: 16px;
+}
