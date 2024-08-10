@@ -12,68 +12,106 @@ use App\Http\Controllers\AgentPanelController;
 use App\Http\Controllers\FlatController;
 use App\Http\Controllers\AboutUsController;
 use App\Http\Controllers\RentalAppointmentController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\MailController;
 
 
-// Route::get('/', function () {
-//     return view('public.index');
-// })->name('home');
+Route::get('/admin/get-properties/{agentId}', [ClientController::class, 'getProperties'])->middleware('admin')->name('admin.get_properties');
+Route::get('/client/get-properties/{agentId}', [ClientController::class, 'getProperties'])->middleware('agent')->name('client.get_properties');
+Route::get('/admin/get-flats/{propertyId}', [ClientController::class, 'getFlats'])->middleware('admin')->name('admin.get_flats');
+Route::get('/agent/get-flats/{propertyId}', [ClientController::class, 'getFlats'])->middleware('agent')->name('agent.get_flats');
+Route::post('/admin/pay-rent', [ClientController::class, 'payRent'])->middleware('admin')->name('admin.pay_rent');
+
+
+
+Route::get('/send-mail/{clientId}', [MailController::class, 'sendEmail'])->middleware('admin')->name('admin.sendEmail');
+Route::get('/admin/invoice/{clientId}', [MailController::class, 'generateInvoice'])
+    ->name('admin.invoice');
+
+// TEMP ROUTE
+Route::get('/admin/view-invoice/{clientId}', [MailController::class, 'viewInvoice'])->name('admin.viewInvoice');
+
+
+
+Route::get('/logoutadmin', [AdminController::class, 'adminLogout'])->middleware('admin')->name('adminlogout');
+
+Route::get('/logoutagent', [AgentController::class, 'agentLogout'])->middleware('agent')->name('agentlogout');
+
 
 Route::get('/', function () {
-    return view('admin.dashboard');
+    return view('public.index');
 })->name('home');
 
+Route::post('/login', [LoginController::class, 'login'])->name('login');
+// Route::get('/', function () {
+    //     return view('admin.dashboard');
+    // })->name('home');
 
-// Admin
-Route::get('admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+
+    // Admin
+Route::get('admin/dashboard', [AdminController::class, 'index'])->middleware('admin')->name('admin.dashboard');
 
 
 // Clients
-Route::get('admin/all/clients', [ClientController::class, 'adminAllClient'])->name('admin.all_client');
-Route::get('admin/add-client', [ClientController::class, 'adminAddClient'])->name('admin.add_client');
-Route::get('admin/edit-client/{id}', [ClientController::class, 'edit'])->name('admin.edit_client');
-Route::get('agent/all/clients', [ClientController::class, 'agentAllClient'])->name('agent.all_client');
-Route::get('agent/add-client', [ClientController::class, 'agentAddClient'])->name('agent.add_client');
+Route::get('admin/all/unpaid-clients', [ClientController::class, 'adminUnpaidClient'])->middleware('admin')->name('admin.unpaid_client');
+Route::get('admin/all/paid-clients', [ClientController::class, 'adminPaidClient'])->middleware('admin')->name('admin.paid_client');
+
+Route::get('admin/add-client', [ClientController::class, 'adminAddClient'])->middleware('admin')->name('admin.add_client');
+Route::post('/admin/add-client', [ClientController::class, 'storeClient'])->middleware('admin')->name('admin.store_client');
+
+Route::get('admin/edit-client/{id}', [ClientController::class, 'edit'])->middleware('admin')->name('admin.edit_client');
+Route::delete('/admin/clients/{id}', [ClientController::class, 'destroy'])->name('admin.destroy_client');
+Route::post('/admin/clients/{id}', [ClientController::class, 'update'])->name('admin.update_client');
+// Route::get('/admin/clients/{id}/edit', [ClientController::class, 'edit'])->name('admin.edit_client');
+
+Route::get('admin/all/clients', [ClientController::class, 'adminAllClient'])->middleware('admin')->name('admin.all_client');
+Route::get('agent/all/clients', [ClientController::class, 'agentAllClient'])->middleware('agent')->name('agent.all_client');
+Route::get('agent/add-client', [ClientController::class, 'agentAddClient'])->middleware('agent')->name('agent.add_client');
+Route::post('/agent/add-client', [ClientController::class, 'agentStoreClient'])->middleware('agent')->name('agent.store_client');
+Route::get('agent/all/unpaid-clients', [ClientController::class, 'agentUnpaidClient'])->middleware('agent')->name('agent.unpaid_client');
+Route::get('agent/all/paid-clients', [ClientController::class, 'agentPaidClient'])->middleware('agent')->name('agent.paid_client');
 
 // Agents
-Route::get('admin/all/agents', [AgentController::class, 'index'])->name('admin.all_agent');
-Route::get('admin/add-agent', [AgentController::class, 'adminAddAgent'])->name('admin.add_agent');
-Route::post('admin/store-agent', [AgentController::class, 'store'])->name('admin.store_agent');
-Route::get('admin/edit-agent/{id}', [AgentController::class, 'editAgent'])->name('admin.edit_agent');
-Route::put('admin/update-agent/{id}', [AgentController::class, 'update'])->name('admin.update_agent');
-Route::delete('admin/delete-agent/{id}', [AgentController::class, 'destroy'])->name('admin.delete_agent');
+Route::get('admin/all/agents', [AgentController::class, 'index'])->middleware('admin')->name('admin.all_agent');
+Route::get('admin/add-agent', [AgentController::class, 'adminAddAgent'])->middleware('admin')->name('admin.add_agent');
+Route::post('admin/store-agent', [AgentController::class, 'store'])->middleware('admin')->name('admin.store_agent');
+Route::get('admin/edit-agent/{id}', [AgentController::class, 'editAgent'])->middleware('admin')->name('admin.edit_agent');
+Route::put('admin/update-agent/{id}', [AgentController::class, 'update'])->middleware('admin')->name('admin.update_agent');
+Route::delete('admin/delete-agent/{id}', [AgentController::class, 'destroy'])->middleware('admin')->name('admin.delete_agent');
 
 // Properties
-Route::get('admin/all/properties', [PropertyController::class, 'index'])->name('admin.all_property');
-Route::get('admin/add-property', [PropertyController::class, 'adminAddProperty'])->name('admin.add_property');
-Route::post('admin/store-property', [PropertyController::class, 'store'])->name('admin.store_property');
-Route::get('admin/edit-property/{id}', [PropertyController::class, 'editProperty'])->name('admin.edit_property');
-Route::post('admin/update-property/{id}', [PropertyController::class, 'update'])->name('admin.update_property');
-Route::delete('admin/delete-property/{id}', [PropertyController::class, 'destroy'])->name('admin.delete_property');
+Route::get('admin/all/properties', [PropertyController::class, 'index'])->middleware('admin')->name('admin.all_property');
+Route::get('admin/add-property', [PropertyController::class, 'adminAddProperty'])->middleware('admin')->name('admin.add_property');
+Route::post('admin/store-property', [PropertyController::class, 'store'])->middleware('admin')->name('admin.store_property');
+Route::get('admin/edit-property/{id}', [PropertyController::class, 'editProperty'])->middleware('admin')->name('admin.edit_property');
+Route::post('admin/update-property/{id}', [PropertyController::class, 'update'])->middleware('admin')->name('admin.update_property');
+Route::delete('admin/delete-property/{id}', [PropertyController::class, 'destroy'])->middleware('admin')->name('admin.delete_property');
 
 // Flats
-Route::get('admin/all/flat', [FlatController::class, 'index'])->name('admin.all_flat');
-Route::get('admin/add-flat', [FlatController::class, 'adminAddFlat'])->name('admin.add_flat');
-Route::post('admin/store-flat', [FlatController::class, 'store'])->name('admin.store_flat');
-Route::get('admin/edit-flat/{id}', [FlatController::class, 'editFlat'])->name('admin.edit_flat');
-Route::put('admin/update-flat/{id}', [FlatController::class, 'update'])->name('admin.update_flat');
-Route::delete('admin/delete-flat/{id}', [FlatController::class, 'destroy'])->name('admin.delete_flat');
+Route::get('admin/all/flat', [FlatController::class, 'index'])->middleware('admin')->name('admin.all_flat');
+Route::get('admin/add-flat', [FlatController::class, 'adminAddFlat'])->middleware('admin')->name('admin.add_flat');
+Route::post('admin/store-flat', [FlatController::class, 'store'])->middleware('admin')->name('admin.store_flat');
+Route::get('admin/edit-flat/{id}', [FlatController::class, 'editFlat'])->middleware('admin')->name('admin.edit_flat');
+Route::put('admin/update-flat/{id}', [FlatController::class, 'update'])->middleware('admin')->name('admin.update_flat');
+Route::delete('admin/delete-flat/{id}', [FlatController::class, 'destroy'])->middleware('admin')->name('admin.delete_flat');
 
 // Agent
-Route::get('agent/dashboard', [AgentPanelController::class, 'index'])->name('agent.dashboard');
+Route::get('agent/dashboard', [AgentPanelController::class, 'index'])->middleware('agent')->name('agent.dashboard');
 
+Route::get('admin/applied-applications', [OurTeamController::class, 'allapplications'])->middleware('admin')->name('ourteam.applied_application');
+Route::get('admin/all-rental-appointments', [RentalAppointmentController::class, 'allRentalAppointments'])->middleware('admin')->name('admin.extra.all_rental_appointments');
 
 // PUBLIC
 Route::get('our-work', [OurWorkController::class, 'index'])->name('public.our_work');
 Route::get('our-services', [OurServicesController::class, 'index'])->name('public.our_services');
 Route::get('about-us', [AboutUsController::class, 'index'])->name('public.about_us');
+Route::get('login', [LoginController::class, 'index'])->name('public.login');
 
 
 //Our Team
 Route::get('our-team', [OurTeamController::class, 'index'])->name('public.our_team');
 Route::post('application', [OurTeamController::class, 'store'])->name('public.store_application');
-Route::get('admin/applied-applications', [OurTeamController::class, 'allapplications'])->name('ourteam.applied_application');
 
 //Rental Appointment
 Route::get('rental-appointment', [RentalAppointmentController::class, 'index'])->name('rental.appointment');
 Route::post('rental-appointment', [RentalAppointmentController::class, 'store'])->name('rental.appointment.store');
-Route::get('admin/all-rental-appointments', [RentalAppointmentController::class, 'allRentalAppointments'])->name('admin.extra.all_rental_appointments');

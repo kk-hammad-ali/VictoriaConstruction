@@ -23,7 +23,7 @@
                                 <tr>
                                     <td>{{ $index + 1 }}</td>
                                     <td>{{ $property->name }}</td>
-                                    <td>{{ $property->agent }}</td>
+                                    <td>{{ $property->user->name ?? 'N/A' }}</td> 
                                     <td>{{ $property->address }}</td>
                                     <td>
                                         <a href="{{ route('admin.edit_property', $property->id) }}" class="btn btn-warning">Edit</a>

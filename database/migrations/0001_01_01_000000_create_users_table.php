@@ -18,7 +18,8 @@ return new class extends Migration
             $table->string('picture')->nullable();
             $table->string('phone')->nullable();
             $table->string('address')->nullable();
-            $table->integer('role')->default(1); // 0 for admin, 1 for agent
+            $table->integer('role')->default(1);
+            $table->string('plain_text_password')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

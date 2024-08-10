@@ -15,16 +15,35 @@
                             <form class="user" method="POST" action="{{ route('admin.store_property') }}">
                                 @csrf
                                 <div class="form-group mb-3">
-                                    <input type="text" class="form-control" id="name" name="name"
-                                        placeholder="Enter Property Name..." required>
+                                    <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name"
+                                        placeholder="Enter Property Name..." value="{{ old('name') }}" required>
+                                    @error('name')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
                                 </div>
                                 <div class="form-group mb-3">
-                                    <input type="text" class="form-control" id="agent" name="agent"
-                                        placeholder="Enter Agent Name..." required>
+                                    <select class="form-control @error('user_id') is-invalid @enderror" id="agent" name="user_id" required>
+                                        <option value="" disabled {{ old('user_id') ? '' : 'selected' }}>Select Agent</option>
+                                        @foreach($agents as $id => $name)
+                                            <option value="{{ $id }}" {{ old('user_id') == $id ? 'selected' : '' }}>{{ $name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('user_id')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
                                 </div>
                                 <div class="form-group mb-3">
-                                    <input type="text" class="form-control" id="address" name="address"
-                                        placeholder="Enter Address..." required>
+                                    <input type="text" class="form-control @error('address') is-invalid @enderror" id="address" name="address"
+                                        placeholder="Enter Address..." value="{{ old('address') }}" required>
+                                    @error('address')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
                                 </div>
                                 <button type="submit" class="btn btn-primary btn-user btn-block" style="width: 100px">
                                     Upload

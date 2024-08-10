@@ -61,6 +61,8 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item" href="{{ route('admin.all_client') }}">All Clients</a>
                         <a class="collapse-item" href="{{ route('admin.add_client') }}">Add Clients</a>
+                        <a class="collapse-item" href="{{ route('admin.unpaid_client') }}">Unpaid Clients</a>
+                        <a class="collapse-item" href="{{ route('admin.paid_client') }}">Paid Clients</a>
                     </div>
                 </div>
             </li>
@@ -202,7 +204,7 @@
                 <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html">Logout</a>
+                    <a class="btn btn-primary" href="{{ route('adminlogout') }}">Logout</a>
                 </div>
             </div>
         </div>

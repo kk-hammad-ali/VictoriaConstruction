@@ -1,76 +1,112 @@
 @extends('layout.agent')
 
-@section('title', 'Add Client Information')
+@section('title', 'Edit Client')
 
 @section('content')
-    <div class="container w-75">
+
+    <div class="container">
         <div class="row justify-content-center">
-            <div class="col-xl-8 col-lg-10 col-md-12">
-                <div class="card o-hidden border-0 shadow-lg my-5">
-                    <div class="card-body p-0">
-                        <div class="p-5">
-                            <div class="text-center mb-4">
-                                <h1 class="h4 text-gray-900">Add New Client</h1>
-                            </div>
-                            <form class="user" enctype="multipart/form-data" method="POST" action="">
-                                @csrf
-                                <div class="form-group mb-3">
-                                    <input type="text" class="form-control" id="agent" name="agent" value="Jack"
-                                        readonly>
-                                </div>
-                                <div class="form-group mb-3">
-                                    <select class="form-control" id="property" name="property" required>
-                                        <option value="" disabled selected>Select Property...</option>
-                                        <!-- Sample properties, replace with dynamic data -->
-                                        <option value="1">Property 1</option>
-                                        <option value="2">Property 2</option>
-                                        <option value="3">Property 3</option>
-                                    </select>
-                                </div>
-                                <div class="form-group mb-3">
-                                    <select class="form-control" id="flat" name="flat" required>
-                                        <option value="" disabled selected>Select Flat...</option>
-                                        <!-- Sample flats, replace with dynamic data -->
-                                        <option value="1">Flat 101</option>
-                                        <option value="2">Flat 102</option>
-                                        <option value="3">Flat 103</option>
-                                    </select>
-                                </div>
-                                <div class="form-group mb-3">
-                                    <input type="text" class="form-control" id="client" name="client"
-                                        placeholder="Enter Client..." required>
-                                </div>
-                                <div class="form-group mb-3">
-                                    <input type="text" class="form-control" id="name" name="name"
-                                        placeholder="Enter Name..." required>
-                                </div>
-                                <div class="form-group mb-3">
-                                    <input type="file" class="form-control" id="picture" name="picture"
-                                        aria-describedby="pictureHelp" required>
-                                    <small id="pictureHelp" class="form-text text-muted">Choose a picture to upload
-                                        (Customer/Driver).</small>
-                                </div>
-                                <div class="form-group mb-3">
-                                    <input type="text" class="form-control" id="id" name="id"
-                                        placeholder="Enter ID (Passport/Driver License)..." required>
-                                </div>
-                                <div class="form-group mb-3">
-                                    <input type="text" class="form-control" id="address" name="address"
-                                        placeholder="Enter Address..." required>
-                                </div>
-                                <div class="form-group mb-3">
-                                    <input type="text" class="form-control" id="country" name="country"
-                                        placeholder="Enter Country..." required>
-                                </div>
-                                <div class="d-flex justify-content-center text-white">
-                                    <button type="submit" class="btn btn-user btn-block w-50"
-                                        style="background-color: #4ab242; font-size:18px; color:white; font-weight:bold;">Upload</button>
-                                </div>
-                            </form>
+            <div class="col-lg-8 col-md-10 col-sm-12">
+                <div class="card border-0 shadow-lg my-5">
+                    <div class="card-body p-4">
+                        <div class="text-center mb-4">
+                            <h1 class="h4 text-gray-900">Edit Client</h1>
                         </div>
+                        <form class="user" method="POST" enctype="multipart/form-data"
+                            action="{{ route('client.update', $client->id) }}">
+                            @csrf
+                            @method('PUT')
+
+                            <!-- Same fields as in the Add form -->
+                            <div class="form-group mb-3">
+                                <label for="agent">Agent Name</label>
+                                <input type="text" class="form-control" id="agent" name="agent"
+                                    value="{{ $client->agent->name }}" readonly>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label for="property_selected">Select Property</label>
+                                <select class="form-control @error('property') is-invalid @enderror" id="property_selected"
+                                    name="property" required>
+                                    <option value="" disabled>Select Property...</option>
+                                    @foreach ($properties as $id => $name)
+                                        <option value="{{ $id }}" {{ $client->property_id == $id ? 'selected' : '' }}>
+                                            {{ $name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('property')
+                                    <div class="text-danger mt-2">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label for="flat_selected">Select Flat</label>
+                                <select class="form-control @error('flat') is-invalid @enderror" id="flat_selected"
+                                    name="flat" required>
+                                    <option value="" disabled>Select Flat...</option>
+                                    @foreach ($flats as $id => $number)
+                                        <option value="{{ $id }}" {{ $client->flat_id == $id ? 'selected' : '' }}>
+                                            {{ $number }}</option>
+                                    @endforeach
+                                </select>
+                                @error('flat')
+                                    <div class="text-danger mt-2">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- Other form fields here -->
+                            <div class="form-group mb-3">
+                                <label for="client_name">Client Name</label>
+                                <input type="text" class="form-control @error('client_name') is-invalid @enderror"
+                                    id="client_name" name="client_name" placeholder="Enter Client Name..."
+                                    value="{{ old('client_name', $client->client_name) }}" required>
+                                @error('client_name')
+                                    <div class="text-danger mt-2">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- ... other fields, similar to the add form ... -->
+
+                            <div class="d-flex justify-content-center">
+                                <button type="submit" class="btn btn-primary btn-user btn-block">
+                                    Save Changes
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var propertyId = "{{ $client->property_id }}";
+            fetch('/agent/get-flats/' + propertyId)
+                .then(response => response.json())
+                .then(data => {
+                    var flatSelect = document.getElementById('flat_selected');
+                    flatSelect.innerHTML =
+                        '<option value="" disabled>Select Flat...</option>';
+                    for (var id in data) {
+                        flatSelect.innerHTML += `<option value="${id}" ${id == "{{ $client->flat_id }}" ? 'selected' : ''}>${data[id]}</option>`;
+                    }
+                });
+
+            document.getElementById('property_selected').addEventListener('change', function() {
+                var propertyId = this.value;
+                fetch('/agent/get-flats/' + propertyId)
+                    .then(response => response.json())
+                    .then(data => {
+                        var flatSelect = document.getElementById('flat_selected');
+                        flatSelect.innerHTML =
+                            '<option value="" disabled>Select Flat...</option>';
+                        for (var id in data) {
+                            flatSelect.innerHTML += `<option value="${id}">${data[id]}</option>`;
+                        }
+                    });
+            });
+        });
+    </script>
+
 @endsection

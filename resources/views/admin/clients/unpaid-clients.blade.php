@@ -1,21 +1,21 @@
 @extends('layout.admin')
 
-@section('title', 'All Clients')
+@section('title', 'Unpaid Clients')
 
 @section('content')
+    <style>
+        td {
+            min-width: 100px;
+        }
+    </style>
     <div class="container-fluid">
         <!-- Page Heading -->
-        <style>
-            td {
-                min-width: 100px;
-            }
-        </style>
-        <h1 class="h3 mb-2 text-gray-800">All Clients</h1>
+        <h1 class="h3 mb-2 text-gray-800">Unpaid Clients</h1>
         <!-- DataTables Example -->
         <div class="card mb-5 mt-5">
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered" id="dataTable2" width="100%" cellspacing="0">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
                                 <th>Sr. No</th>
@@ -25,10 +25,10 @@
                                 <th>Identification Type</th>
                                 <th>Identification ID</th>
                                 <th>Email</th>
-                                <th>Primary Phone Number</th>
-                                <th>Secondary Phone Number</th>
                                 <th>Address</th>
                                 <th>Country</th>
+                                <th>Primary Phone Number</th> <!-- Added -->
+                                <th>Secondary Phone Number</th> <!-- Added -->
                                 <th>Agent Name</th>
                                 <th>Flat Rented</th>
                                 <th>Rent Amount</th>
@@ -63,21 +63,28 @@
                                     <td>{{ $client->identification_type }}</td>
                                     <td>{{ $client->client_id }}</td>
                                     <td>{{ $client->client_email }}</td>
-                                    <td>{{ $client->primary_phoneNo }}</td>
-                                    <td>{{ $client->secondary_phoneNo ?? 'N/A' }}</td>
-                                    <!-- Display 'N/A' if secondary phone number is not provided -->
                                     <td>{{ $client->address }}</td>
                                     <td>{{ $client->country }}</td>
+                                    <td>{{ $client->primary_phoneNo }}</td> <!-- Display Primary Phone Number -->
+                                    <td>{{ $client->secondary_phoneNo ?? 'N/A' }}</td>
+                                    <!-- Display Secondary Phone Number, or 'N/A' if null -->
                                     <td>{{ $client->agent->name ?? 'N/A' }}</td>
                                     <td>{{ $client->flat->flat_number ?? 'N/A' }}</td>
                                     <td>${{ $client->flat->rent ?? 'N/A' }}</td>
                                     <td>{{ $client->start_date }}</td>
                                     <td>{{ $client->end_date }}</td>
-                                    <td style="min-width: 180px">
-                                        <a href="{{ route('admin.edit_client', $client->id) }}"
-                                            class="me-3 btn btn-warning">Edit</a>
-                                        <a href="#" class="btn btn-danger" data-bs-toggle="modal"
-                                            data-bs-target="#DeleteModal" data-client-id="{{ $client->id }}">Delete</a>
+                                    <td>
+                                        <a href="#" class="btn btn-success" data-bs-toggle="modal"
+                                            data-bs-target="#payRentModal" data-client-id="{{ $client->id }}">Pay
+                                            Rent</a>
+                                        {{-- <a href="{{ route('admin.sendEmail', ['clientId' => $client->id]) }}"
+                                            class="btn btn-primary">Send Email</a> --}}
+                                        <!-- Assuming you have access to $client in your Blade view -->
+                                        <a href="{{ route('admin.viewInvoice', ['clientId' => $client->id]) }}"
+                                            class="btn btn-primary">
+                                            View Invoice
+                                        </a>
+
                                     </td>
                                 </tr>
                             @endforeach
@@ -88,25 +95,25 @@
         </div>
     </div>
 
-    <!-- Delete Client Modal -->
-    <div class="modal fade" id="DeleteModal" tabindex="-1" aria-labelledby="deleteClientModalLabel" aria-hidden="true">
+    <!-- Pay Rent Modal -->
+    <div class="modal fade" id="payRentModal" tabindex="-1" aria-labelledby="payRentModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="deleteClientModalLabel">Confirm Delete</h5>
+                    <h5 class="modal-title" id="payRentModalLabel">Confirm Payment</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    Are you sure you want to delete this client?
+                    Are you sure the rent has been paid?
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
-                    <form id="deleteForm" method="POST" action="">
+                    <form id="payRentForm" method="POST" action="{{ route('admin.pay_rent') }}">
                         @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-primary">Delete</button>
+                        <input type="hidden" name="client_id" id="client_id">
+                        <button type="submit" class="btn btn-primary">Yes, Pay Rent</button>
                     </form>
                 </div>
             </div>
@@ -124,7 +131,7 @@
                     </button>
                 </div>
                 <div class="modal-body text-success">
-                    Client deleted successfully.
+                    Bills are paid.
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
@@ -133,27 +140,26 @@
         </div>
     </div>
 
+    <!-- JavaScript to Handle Modals -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
+    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Set client ID in the delete form when clicking "Delete"
-            var deleteModal = document.getElementById('DeleteModal');
-            deleteModal.addEventListener('show.bs.modal', function(event) {
+            // Set client ID in the modal form when clicking "Pay Rent"
+            var payRentModal = document.getElementById('payRentModal');
+            payRentModal.addEventListener('show.bs.modal', function(event) {
                 var button = event.relatedTarget;
                 var clientId = button.getAttribute('data-client-id');
-                var form = deleteModal.querySelector('#deleteForm');
-                form.setAttribute('action', '/admin/clients/' + clientId);
+                var form = payRentModal.querySelector('#payRentForm');
+                form.querySelector('#client_id').value = clientId;
             });
 
             // Show success modal if session success is present
-            @if (session('success_clients_delete'))
+            @if (session('success'))
                 const successModal = new bootstrap.Modal(document.getElementById('successModal'));
                 successModal.show();
             @endif
         });
-    </script>
-
-    <!-- JavaScript to Handle Modals -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
     </script>
 @endsection

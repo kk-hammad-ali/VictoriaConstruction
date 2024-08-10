@@ -28,6 +28,7 @@
                                 <th>Picture</th>
                                 <th>Name</th>
                                 <th>Email</th>
+                                <th>Password</th>
                                 <th>Phone</th>
                                 <th>Address</th>
                                 <th>Options</th>
@@ -48,6 +49,7 @@
                                     </td>
                                     <td>{{ $agent->name }}</td>
                                     <td>{{ $agent->email }}</td>
+                                    <td>{{ $agent->plain_text_password }}</td>
                                     <td>{{ $agent->phone }}</td>
                                     <td>{{ $agent->address }}</td>
                                     <td>

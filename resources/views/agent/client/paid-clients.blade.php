@@ -1,11 +1,11 @@
 @extends('layout.agent')
 
-@section('title', 'All Clients')
+@section('title', 'Paid Clients')
 
 @section('content')
     <div class="container-fluid">
         <!-- Page Heading -->
-        <h1 class="h3 mb-2 text-gray-800">All Clients</h1>
+        <h1 class="h3 mb-2 text-gray-800">Paid Clients</h1>
         <!-- DataTables Example -->
         <div class="card mb-5 mt-5">
             <div class="card-body">
@@ -22,11 +22,14 @@
                                 <th>Email</th>
                                 <th>Address</th>
                                 <th>Country</th>
+                                <th>Primary Phone Number</th> <!-- Added -->
+                                <th>Secondary Phone Number</th> <!-- Added -->
                                 <th>Agent Name</th>
                                 <th>Flat Rented</th>
                                 <th>Rent Amount</th>
-                                <th>Start Date</th>
-                                <th>End Date</th>
+                                <th>Start Date</th> <!-- Added Start Date Column -->
+                                <th>End Date</th> <!-- Added End Date Column -->
+                                {{-- <th>Action</th> --}}
                             </tr>
                         </thead>
                         <tbody>
@@ -57,11 +60,17 @@
                                     <td>{{ $client->client_email }}</td>
                                     <td>{{ $client->address }}</td>
                                     <td>{{ $client->country }}</td>
+                                    <td>{{ $client->primary_phoneNo }}</td> <!-- Display Primary Phone Number -->
+                                    <td>{{ $client->secondary_phoneNo ?? 'N/A' }}</td>
                                     <td>{{ $client->agent->name ?? 'N/A' }}</td>
                                     <td>{{ $client->flat->flat_number ?? 'N/A' }}</td>
                                     <td>${{ $client->flat->rent ?? 'N/A' }}</td>
-                                    <td>{{ $client->start_date }}</td>
-                                    <td>{{ $client->end_date }}</td>
+                                    <td>{{ $client->start_date }}</td> <!-- Display Start Date -->
+                                    <td>{{ $client->end_date }}</td> <!-- Display End Date -->
+                                    {{-- <td>
+                                        <a href="#" class="btn btn-success" data-bs-toggle="modal"
+                                            data-bs-target="#payRentModal" data-client-id="{{ $client->id }}">Pay Rent</a>
+                                    </td> --}}
                                 </tr>
                             @endforeach
                         </tbody>
@@ -70,4 +79,5 @@
             </div>
         </div>
     </div>
+
 @endsection

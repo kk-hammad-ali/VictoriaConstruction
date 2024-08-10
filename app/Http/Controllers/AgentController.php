@@ -15,6 +15,13 @@ class AgentController extends Controller
         return view('admin.agents.all-agents', compact('agents'));
     }
 
+    public function agentLogout(){
+        session()->forget('agent_id');
+        session()->forget('user');
+
+        return redirect('/login');
+    }
+
     public function adminAddAgent()
     {
         return view('admin.agents.add-agents');
@@ -42,6 +49,7 @@ class AgentController extends Controller
         $user->identification_number = $request->identification_number;
         $user->phone = $request->phone;
         $user->address = $request->address;
+        $user->plain_text_password = $password;
         $user->role = 1; // Set as agent
 
         if ($request->hasFile('picture')) {
