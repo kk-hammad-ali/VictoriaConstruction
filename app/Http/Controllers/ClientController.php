@@ -93,14 +93,12 @@ class ClientController extends Controller
         return response()->json($flats);
     }
 
-    public function editAdminClient($id)
-    {
-        // $client = Clients::findOrFail($id);
-        // compact('client')
-        return view('admin.clients.edit-clients');
-    }
-
-
+    // public function editAdminClient($id)
+    // {
+    //     // $client = Clients::findOrFail($id);
+    //     // compact('client')
+    //     return view('admin.clients.edit-clients');
+    // }
 
     public function agentAllClient()
     {
@@ -127,7 +125,6 @@ class ClientController extends Controller
         $agent = auth()->user()->name;
         $properties = Property::where('user_id', $agentId)->pluck('name', 'id');
         $flats = Flat::whereIn('property_id', $properties->keys())->pluck('flat_number', 'id');
-
 
         return view('agent.client.add-client', compact('agent','agentId', 'properties', 'flats'));
     }
@@ -215,13 +212,13 @@ class ClientController extends Controller
             'address' => 'required|string|max:255',
             'country' => 'required|string|max:255',
             'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:8192',
-            'start_date' => 'required|date',  // Validate start date
+            'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
             'primary_phoneNo' => 'required|string|max:15',
-            'secondary_phoneNo' => 'nullable|string|max:15', // Validate end date
+            'secondary_phoneNo' => 'nullable|string|max:15',
         ]);
 
-        // Handle file upload
+        // Handle picture file upload
         $picturePath = null;
         if ($request->hasFile('picture')) {
             $file = $request->file('picture');
@@ -230,27 +227,27 @@ class ClientController extends Controller
             $picturePath = 'images/clients/' . $filename;
         }
 
-        $agentId = auth()->user()->id;
-
         // Create a new Client instance
         $client = new Client();
+        $agentId = auth()->user()->id;
 
         $client->client_name = $request->input('client_name');
         $client->client_id = $request->input('client_id');
         $client->client_email = $request->input('client_email');
-        $client->identification_type = $request->identification_type;
+        $client->identification_type = $request->input('identification_type');
         $client->address = $request->input('address');
         $client->country = $request->input('country');
-        $client->agent_id = $agentId;// Foreign key for agent
+        $client->agent_id = $agentId; // Foreign key for agent
         $client->property_id = $request->input('property'); // Foreign key for property
         $client->flat_id = $request->input('flat'); // Foreign key for flat
         $client->picture = $picturePath; // Store picture path
         $client->status = 0; // Default status value
         $client->start_date = $request->input('start_date'); // Store start date
-        $client->end_date = $request->input('end_date');
+        $client->end_date = $request->input('end_date'); // Store end date
         $client->primary_phoneNo = $request->input('primary_phoneNo');
         $client->secondary_phoneNo = $request->input('secondary_phoneNo', null);
 
+        // Handle license picture file upload
         if ($request->hasFile('license_picture')) {
             $file = $request->file('license_picture');
             $filename = time() . '.' . $file->getClientOriginalExtension();
@@ -258,30 +255,13 @@ class ClientController extends Controller
             $client->license_picture = 'images/license/' . $filename;
         }
 
-        // Save the client
+        // Save the client to the database
         $client->save();
 
         // Redirect with success message
-        return redirect()->route('agent.unpaid_client')->with('success_clients', 'Client added successfully.');
+        return redirect()->route('agent.all_client')->with('success_clients', 'Client added successfully.');
     }
 
-    // public function payRent(Request $request)
-    // {
-    //     $request->validate([
-    //         'client_id' => 'required',
-    //     ]);
-
-    //     $client_id = $request->input('client_id');
-    //     $client = Client::find($client_id);
-    //     if ($client) {
-    //         $client->status = 1;
-    //         $client->payment_date = now();
-    //         $client->save();
-    //         // Redirect back with success message
-    //         return redirect()->route('admin.unpaid_client')->with('success', 'Bills are paid.');
-    //     }
-    //     return redirect()->route('admin.unpaid_client')->with('error', 'Client not found.');
-    // }
 
     public function payRent(Request $request)
     {
@@ -295,20 +275,20 @@ class ClientController extends Controller
         $client = Client::findOrFail($request->client_id);
 
         // Check if the rent has already been paid
-        if ($client->status == 1) {
-            return redirect()->route('admin.unpaid_client')->with('success', 'Bills already are paid.');
-        }
+        // if ($client->status == 1) {
+        //     return redirect()->route('admin.unpaid_client')->with('success', 'Bills already are paid.');
+        // }
 
         $client->payment_date = now();
         $client->status = 1;
 
-        // $this->mailController->sendReceivedInvoice($client->id);
+        $this->mailController->sendReceivedInvoice($client->id);
 
         $this->historyController->storeClientHistory($client->id);
 
         $client->save();
 
-        return redirect()->route('admin.unpaid_client')->with('success', 'Bills already are paid.');
+        return redirect()->route('admin.unpaid_client')->with('success', 'Bills are paid.');
     }
 
 

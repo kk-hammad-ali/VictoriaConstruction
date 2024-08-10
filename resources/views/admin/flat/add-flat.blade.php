@@ -36,8 +36,8 @@
                                         placeholder="Enter Rent Amount..." required>
                                 </div>
                                 <div class="d-flex justify-content-center">
-                                    <button type="submit" class="btn btn-primary btn-user btn-block" style="width: 100px">
-                                        Upload
+                                    <button type="submit" class="btn btn-primary btn-user btn-block">
+                                        Add New Flat
                                     </button>
                                 </div>
                             </form>

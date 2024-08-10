@@ -8,11 +8,24 @@ use App\Models\Property;
 use App\Models\Client;
 use App\Models\History;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+
 
 class AdminController extends Controller
 {
     public function index()
     {
+        $clients = Client::whereNotNull('payment_date')
+        ->whereDate('payment_date', '<=', Carbon::now()->subDays(28))
+        ->where('status', 1)
+        ->get();
+
+        foreach ($clients as $client) {
+            $client->status = 0; // Mark as unpaid
+            $client->payment_date = null; // Clear the payment date
+            $client->save();
+        }
+
         $totalAgents = User::where('role', 1)->count();
         $totalProperties = Property::count();
         $totalClients = Client::count();

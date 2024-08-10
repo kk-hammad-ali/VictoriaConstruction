@@ -22,8 +22,12 @@
                                     <select class="form-control" id="identification_type" name="identification_type"
                                         required>
                                         <option value="" disabled selected>Select Identification Type...</option>
-                                        <option value="driver_license" {{ old('identification_type') == 'driver_license' ? 'selected' : '' }}>Driver License</option>
-                                        <option value="passport_number" {{ old('identification_type') == 'passport_number' ? 'selected' : '' }}>Passport Number</option>
+                                        <option value="driver_license"
+                                            {{ old('identification_type') == 'driver_license' ? 'selected' : '' }}>Driver
+                                            License</option>
+                                        <option value="passport_number"
+                                            {{ old('identification_type') == 'passport_number' ? 'selected' : '' }}>Passport
+                                            Number</option>
                                     </select>
                                     @error('identification_type')
                                         <div class="text-danger">{{ $message }}</div>
@@ -32,7 +36,8 @@
                                 <div class="form-group mb-3">
                                     <input type="text" class="form-control" id="identification_number"
                                         name="identification_number"
-                                        placeholder="Enter Driver License or Passport Number..." value="{{ old('identification_number') }}" required>
+                                        placeholder="Enter Driver License or Passport Number..."
+                                        value="{{ old('identification_number') }}" required>
                                     @error('identification_number')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
@@ -73,10 +78,10 @@
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                <div class="d-flex justify-content-center text-white">
-                                    <button type="submit" class="btn btn-user btn-block w-50"
-                                        style="background-color: #4ab242; font-size:18px; color:white; font-weight:bold;">Add
-                                        Agent</button>
+                                <div class="d-flex justify-content-center">
+                                    <button type="submit" class="btn btn-primary btn-user btn-block">
+                                        Add New Agent
+                                    </button>
                                 </div>
                             </form>
                         </div>

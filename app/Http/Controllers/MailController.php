@@ -9,6 +9,7 @@ use App\Mail\NotReceivedInvoiceEmail;
 use App\Models\Client;
 use Barryvdh\DomPDF\Facade\Pdf;
 
+
 class MailController extends Controller
 {
     protected $logoPath;
@@ -40,7 +41,7 @@ class MailController extends Controller
                 ]);
         });
 
-        return redirect()->route('admin.unpaid_client')->with('success', 'Received invoice sent successfully');
+        return redirect()->route('admin.unpaid_client')->with('success', 'Rent Received invoice sent successfully');
     }
 
     // Generate Received Invoice
@@ -56,6 +57,7 @@ class MailController extends Controller
 
         return $pdf->download('rent_received_' . $client->client_name . '.pdf');
     }
+
 
     // View Received Invoice
     public function viewReceivedInvoice($clientId)
@@ -91,7 +93,7 @@ class MailController extends Controller
                 ]);
         });
 
-        return redirect()->route('admin.unpaid_client')->with('success', 'Not Received invoice sent successfully');
+        return redirect()->route('admin.unpaid_client')->with('success', 'Rent Not Received invoice sent successfully');
     }
 
     // Generate Not Received Invoice

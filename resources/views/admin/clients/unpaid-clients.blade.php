@@ -79,7 +79,7 @@
                                             Rent</a>
                                         <a href="{{ route('admin.sendNotReceivedInvoice', ['clientId' => $client->id]) }}"
                                             class="btn btn-danger mt-2">
-                                            Send Not Received Invoice
+                                            Rent Not Received Invoice
                                         </a>
                                     </td>
                                 </tr>

@@ -44,18 +44,12 @@
                     <i class="fas fa-fw fa-user"></i>
                     <span>Clients</span>
                 </a>
-                {{-- <div id="clients" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="{{ route('agent.all_client') }}">All Clients</a>
-                        <a class="collapse-item" href="{{ route('agent.add_client') }}">Add Clients</a>
-                    </div>
-                </div> --}}
-
                 <div id="clients" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item" href="{{ route('agent.add_client') }}">Add Clients</a>
-                        <a class="collapse-item" href="{{ route('agent.unpaid_client') }}">Unpaid Clients</a>
-                        <a class="collapse-item" href="{{ route('agent.paid_client') }}">Paid Clients</a>
+                        <a class="collapse-item" href="{{ route('agent.all_client') }}">All Clients</a>
+                        {{-- <a class="collapse-item" href="{{ route('agent.unpaid_client') }}">Unpaid Clients</a> --}}
+                        {{-- <a class="collapse-item" href="{{ route('agent.paid_client') }}">Paid Clients</a> --}}
                     </div>
                 </div>
             </li>
@@ -122,7 +116,7 @@
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Your Website 2021</span>
+                        <span>Copyright &copy; Victoria Construction 2024</span>
                     </div>
                 </div>
             </footer>
