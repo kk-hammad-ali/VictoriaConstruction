@@ -27,8 +27,8 @@
                                 <th>Email</th>
                                 <th>Address</th>
                                 <th>Country</th>
-                                <th>Primary Phone Number</th> <!-- Added -->
-                                <th>Secondary Phone Number</th> <!-- Added -->
+                                <th>Primary Phone Number</th>
+                                <th>Secondary Phone Number</th>
                                 <th>Agent Name</th>
                                 <th>Flat Rented</th>
                                 <th>Rent Amount</th>
@@ -77,14 +77,10 @@
                                         <a href="#" class="btn btn-success" data-bs-toggle="modal"
                                             data-bs-target="#payRentModal" data-client-id="{{ $client->id }}">Pay
                                             Rent</a>
-                                        {{-- <a href="{{ route('admin.sendEmail', ['clientId' => $client->id]) }}"
-                                            class="btn btn-primary">Send Email</a> --}}
-                                        <!-- Assuming you have access to $client in your Blade view -->
-                                        <a href="{{ route('admin.viewInvoice', ['clientId' => $client->id]) }}"
-                                            class="btn btn-primary">
-                                            View Invoice
+                                        <a href="{{ route('admin.sendNotReceivedInvoice', ['clientId' => $client->id]) }}"
+                                            class="btn btn-danger mt-2">
+                                            Send Not Received Invoice
                                         </a>
-
                                     </td>
                                 </tr>
                             @endforeach
@@ -131,7 +127,7 @@
                     </button>
                 </div>
                 <div class="modal-body text-success">
-                    Bills are paid.
+                    {{ session('success') }}
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>

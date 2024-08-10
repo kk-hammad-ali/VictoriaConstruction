@@ -3,26 +3,37 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
+use App\Models\Property;
 use App\Models\Client;
-use Carbon\Carbon;
+use App\Models\History;
+use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
     public function index()
     {
-        $clients = Client::whereNotNull('payment_date')
-            ->whereDate('payment_date', '<=', Carbon::now()->subDays(28))
-            ->where('status', 1)
-            ->get();
+        $totalAgents = User::where('role', 1)->count();
+        $totalProperties = Property::count();
+        $totalClients = Client::count();
 
-        foreach ($clients as $client) {
-            $client->status = 0; // Mark as unpaid
-            $client->payment_date = null; // Clear the payment date
-            $client->save();
-        }
+        // Get the 5 most recent rows from History
+        $clients = History::orderBy('created_at', 'desc')->limit(5)->get();
 
-        return view('admin.dashboard');
+        $totalEarnings = DB::table('clients')
+            ->join('flats', 'clients.flat_id', '=', 'flats.id')
+            ->whereNotNull('clients.payment_date')
+            ->sum('flats.rent');
+
+        return view('admin.dashboard', [
+            'totalAgents' => $totalAgents,
+            'totalProperties' => $totalProperties,
+            'totalClients' => $totalClients,
+            'totalEarnings' => $totalEarnings,
+            'clients' => $clients,
+        ]);
     }
+
 
     public function adminLogout(){
         session()->forget('admin_id');

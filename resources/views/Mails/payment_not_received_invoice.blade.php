@@ -6,28 +6,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <title>Paid Invoice</title>
+    <title>Un Paid Invoice</title>
     <style>
         .paid-stamp {
             position: sticky;
-            left: 20%;
+            top: 20px;
+            left: 20px;
             transform: rotate(-45deg);
             font-size: 2rem;
             text-align: center;
             color: red;
             border: 2px solid red;
-            padding: 10px 20px;
             border-radius: 10px;
-            width: 120px;
+            width: 150px;
             margin: 25px 10px;
+            z-index: 10;
+        }
+
+        @media (max-width: 768px) {
+            .paid-stamp {
+                font-size: 1.5rem;
+                width: 120px;
+                margin: 20px;
+            }
         }
     </style>
 </head>
 
 <body>
     <div class="container my-5">
-        <div class="card p-4 shadow-sm">
-            <div class="d-flex justify-content-between mb-4">
+        <div class="card p-4 shadow-sm position-relative">
+            <div class="d-flex flex-column flex-md-row justify-content-between mb-4">
                 <div>
                     <img class="mb-3" src="{{ asset('img/logo.png') }}" alt="Company Logo" width="150">
                     <p>123 Main Street, Cityville, Country</p>
@@ -42,14 +51,14 @@
             </div>
 
             <div class="row mb-4">
-                <div class="col-md-6">
+                <div class="col-12 col-md-6">
                     <h4>Client Details</h4>
                     <p><strong>Name:</strong> {{ $client->client_name }}</p>
                     <p><strong>Email:</strong> {{ $client->client_email }}</p>
                     <p><strong>Address:</strong> {{ $client->address }}, {{ $client->country }}</p>
                     <p><strong>Phone:</strong> {{ $client->primary_phoneNo }}</p>
                 </div>
-                <div class="col-md-6 text-end">
+                <div class="col-12 col-md-6 text-end">
                     <h4>Agent Details</h4>
                     <p><strong>Name:</strong> {{ $client->agent->name }}</p>
                     <p><strong>Email:</strong> {{ $client->agent->email }}</p>
@@ -59,7 +68,7 @@
             </div>
 
             <div class="row mb-4">
-                <div class="col-md-6">
+                <div class="col-12 col-md-6">
                     <h4>Flat Details</h4>
                     <p><strong>Property:</strong> {{ $client->property->name }}</p>
                     <p><strong>Flat Floor:</strong> {{ $client->flat->floor }}</p>
@@ -69,7 +78,7 @@
 
             <div class="row mb-4">
                 <div class="col-12 col-md-6">
-                    <div class="paid-stamp">PAID</div>
+                    <div class="paid-stamp">UN PAID</div>
                 </div>
                 <div class="col-12 col-md-6 text-end">
                     <p class="h5 mb-0"><strong>Total:</strong> $ {{ $client->flat->rent }}</p>

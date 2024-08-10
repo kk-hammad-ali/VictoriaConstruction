@@ -4,15 +4,27 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-// use App\Models\User;
 use App\Models\Property;
 use App\Models\Flat;
 use App\Models\Client;
-use PDF; // Import the PDF facade
+use PDF;
+use App\Http\Controllers\MailController;
+use App\Http\Controllers\HistoryController;
 
 
 class ClientController extends Controller
 {
+
+    protected $mailController;
+    protected $historyController;
+
+    public function __construct(MailController $mailController, HistoryController $historyController)
+    {
+        $this->mailController = $mailController;
+        $this->historyController = $historyController;
+    }
+
+
     public function adminUnpaidClient()
     {
         // Fetch clients with status 0
@@ -253,22 +265,50 @@ class ClientController extends Controller
         return redirect()->route('agent.unpaid_client')->with('success_clients', 'Client added successfully.');
     }
 
+    // public function payRent(Request $request)
+    // {
+    //     $request->validate([
+    //         'client_id' => 'required',
+    //     ]);
+
+    //     $client_id = $request->input('client_id');
+    //     $client = Client::find($client_id);
+    //     if ($client) {
+    //         $client->status = 1;
+    //         $client->payment_date = now();
+    //         $client->save();
+    //         // Redirect back with success message
+    //         return redirect()->route('admin.unpaid_client')->with('success', 'Bills are paid.');
+    //     }
+    //     return redirect()->route('admin.unpaid_client')->with('error', 'Client not found.');
+    // }
+
     public function payRent(Request $request)
     {
+        // Validate the request
         $request->validate([
-            'client_id' => 'required',
+            'client_id' => 'required|exists:clients,id',
+            // other validation rules
         ]);
 
-        $client_id = $request->input('client_id');
-        $client = Client::find($client_id);
-        if ($client) {
-            $client->status = 1;
-            $client->payment_date = now();
-            $client->save();
-            // Redirect back with success message
-            return redirect()->route('admin.unpaid_client')->with('success', 'Bills are paid.');
+        // Fetch client
+        $client = Client::findOrFail($request->client_id);
+
+        // Check if the rent has already been paid
+        if ($client->status == 1) {
+            return redirect()->route('admin.unpaid_client')->with('success', 'Bills already are paid.');
         }
-        return redirect()->route('admin.unpaid_client')->with('error', 'Client not found.');
+
+        $client->payment_date = now();
+        $client->status = 1;
+
+        // $this->mailController->sendReceivedInvoice($client->id);
+
+        $this->historyController->storeClientHistory($client->id);
+
+        $client->save();
+
+        return redirect()->route('admin.unpaid_client')->with('success', 'Bills already are paid.');
     }
 
 

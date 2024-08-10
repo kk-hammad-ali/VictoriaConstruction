@@ -4,90 +4,120 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\WelcomeEmail;
+use App\Mail\ReceivedInvoiceEmail;
+use App\Mail\NotReceivedInvoiceEmail;
 use App\Models\Client;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class MailController extends Controller
 {
-    public function sendEmail($clientId)
+    protected $logoPath;
+
+    public function __construct()
     {
-        // Fetch client details from the database
+        $this->logoPath = public_path('img/logo.png');
+    }
+
+
+    // Send Received Invoice
+    public function sendReceivedInvoice($clientId)
+    {
         $client = Client::findOrFail($clientId);
-
-        // Get current date
         $date = now()->format('Y-m-d');
-
-        // Logo path
-        $logo = public_path('img/logo.png');
-
-        // Generate the PDF
-        $pdf = Pdf::loadView('mails.payment_receieved_invoice', [
-            'company' => 'Victoria Construction',
+        $pdf = Pdf::loadView('mails.payment_received_invoice', [
             'date' => $date,
-            'logo' => $logo,
-            'client' => $client
+            'client' => $client,
+            'logoUrl' => $this->logoPath,
         ]);
-
-        // Create the PDF file
         $pdfFile = $pdf->output();
+        $subject = 'Your Payment Received Invoice from Victoria Construction';
 
-        // Prepare the email
-        Mail::send([], [], function ($message) use ($client, $pdfFile) {
+        Mail::send([], [], function ($message) use ($client, $pdfFile, $subject) {
             $message->to($client->client_email)
-                ->subject('Your Invoice from Victoria Construction')
-                ->attachData($pdfFile, 'invoice_' . $client->id . '.pdf', [
+                ->subject($subject)
+                ->attachData($pdfFile, 'rent_received_' . $client->client_name . '.pdf', [
                     'mime' => 'application/pdf',
                 ]);
         });
 
-        return response()->json(['message' => 'Invoice sent successfully']);
+        return redirect()->route('admin.unpaid_client')->with('success', 'Received invoice sent successfully');
     }
 
-    public function generateInvoice($clientId)
+    // Generate Received Invoice
+    public function generateReceivedInvoice($clientId)
     {
-        // Fetch client details from the database
         $client = Client::findOrFail($clientId);
-
-        // Get current date
         $date = now()->format('Y-m-d');
-
-        // Logo path
-        $logo = public_path('img/logo.png');
-
-        // Generate the PDF
-        $pdf = Pdf::loadView('mails.payment_receieved_invoice', [
-            'company' => 'Victoria Construction',
+        $pdf = Pdf::loadView('mails.payment_received_invoice', [
             'date' => $date,
-            'logo' => $logo,
-            'client' => $client
+            'client' => $client,
+            'logoUrl' => $this->logoPath,
         ]);
 
-        // Download the PDF with a specified filename
-        return $pdf->download('invoice_' . $client->id . '.pdf');
+        return $pdf->download('rent_received_' . $client->client_name . '.pdf');
     }
 
-
-    public function viewInvoice($clientId)
+    // View Received Invoice
+    public function viewReceivedInvoice($clientId)
     {
-        // Fetch client details from the database
-        $client = Client::findOrFail($clientId);
-
-        // Get current date
+        $client = Client::with(['agent', 'property', 'flat'])->findOrFail($clientId);
         $date = now()->format('Y-m-d');
 
-        // Logo path
-        $logo = public_path('img/logo.png');
-
-        // Generate the PDF
-        $pdf = Pdf::loadView('mails.payment_receieved_invoice', [
-            'company' => 'Victoria Construction',
+        return view('mails.payment_receieved_invoice', [
             'date' => $date,
-            'logo' => $logo,
-            'client' => $client
+            'client' => $client,
+            'logoUrl' => $this->logoPath,
+        ]);
+    }
+
+    // Send Not Received Invoice
+    public function sendNotReceivedInvoice($clientId)
+    {
+        $client = Client::findOrFail($clientId);
+        $date = now()->format('Y-m-d');
+        $pdf = Pdf::loadView('mails.payment_not_received_invoice', [
+            'date' => $date,
+            'client' => $client,
+            'logoUrl' => $this->logoPath,
+        ]);
+        $pdfFile = $pdf->output();
+        $subject = 'Your Payment Not Received Invoice from Victoria Construction';
+
+        Mail::send([], [], function ($message) use ($client, $pdfFile, $subject) {
+            $message->to($client->client_email)
+                ->subject($subject)
+                ->attachData($pdfFile, 'rent_not_received_' . $client->client_name . '.pdf', [
+                    'mime' => 'application/pdf',
+                ]);
+        });
+
+        return redirect()->route('admin.unpaid_client')->with('success', 'Not Received invoice sent successfully');
+    }
+
+    // Generate Not Received Invoice
+    public function generateNotReceivedInvoice($clientId)
+    {
+        $client = Client::findOrFail($clientId);
+        $date = now()->format('Y-m-d');
+        $pdf = Pdf::loadView('mails.payment_not_received_invoice', [
+            'date' => $date,
+            'client' => $client,
+            'logoUrl' => $this->logoPath,
         ]);
 
-        // Return the PDF as a response to display in the browser
-        return $pdf->stream('invoice_' . $client->id . '.pdf');
+        return $pdf->download('rent_not_received_' . $client->client_name . '.pdf');
+    }
+
+    // View Not Received Invoice
+    public function viewNotReceivedInvoice($clientId)
+    {
+        $client = Client::with(['agent', 'property', 'flat'])->findOrFail($clientId);
+        $date = now()->format('Y-m-d');
+
+        return view('mails.payment_not_received_invoice', [
+            'date' => $date,
+            'client' => $client,
+            'logoUrl' => $this->logoPath,
+        ]);
     }
 }

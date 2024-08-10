@@ -14,6 +14,7 @@ use App\Http\Controllers\AboutUsController;
 use App\Http\Controllers\RentalAppointmentController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MailController;
+use App\Http\Controllers\HistoryController;
 
 
 Route::get('/admin/get-properties/{agentId}', [ClientController::class, 'getProperties'])->middleware('admin')->name('admin.get_properties');
@@ -23,13 +24,37 @@ Route::get('/agent/get-flats/{propertyId}', [ClientController::class, 'getFlats'
 Route::post('/admin/pay-rent', [ClientController::class, 'payRent'])->middleware('admin')->name('admin.pay_rent');
 
 
+Route::get('/admin/history', [HistoryController::class, 'showHistory'])->middleware('admin')->name('admin.showHistory');
 
-Route::get('/send-mail/{clientId}', [MailController::class, 'sendEmail'])->middleware('admin')->name('admin.sendEmail');
-Route::get('/admin/invoice/{clientId}', [MailController::class, 'generateInvoice'])
-    ->name('admin.invoice');
 
-// TEMP ROUTE
-Route::get('/admin/view-invoice/{clientId}', [MailController::class, 'viewInvoice'])->name('admin.viewInvoice');
+
+
+// Route for sending received invoice
+Route::get('/send-received-invoice/{clientId}', [MailController::class, 'sendReceivedInvoice'])
+    ->middleware('admin')
+    ->name('admin.sendReceivedInvoice');
+
+// Route for generating received invoice
+Route::get('/admin/generate-received-invoice/{clientId}', [MailController::class, 'generateReceivedInvoice'])
+    ->name('admin.generateReceivedInvoice');
+
+// Route for viewing received invoice
+Route::get('/admin/view-received-invoice/{clientId}', [MailController::class, 'viewReceivedInvoice'])
+    ->name('admin.viewReceivedInvoice');
+
+// Route for sending not received invoiceP
+Route::get('/send-not-received-invoice/{clientId}', [MailController::class, 'sendNotReceivedInvoice'])
+    ->middleware('admin')
+    ->name('admin.sendNotReceivedInvoice');
+
+// Route for generating not received invoice
+Route::get('/admin/generate-not-received-invoice/{clientId}', [MailController::class, 'generateNotReceivedInvoice'])
+    ->name('admin.generateNotReceivedInvoice');
+
+// Route for viewing not received invoice
+Route::get('/admin/view-not-received-invoice/{clientId}', [MailController::class, 'viewNotReceivedInvoice'])
+    ->name('admin.viewNotReceivedInvoice');
+
 
 
 

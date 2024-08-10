@@ -8,10 +8,12 @@
     <title>Victoria Constructions</title>
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('js/style.js') }}">
+    <link rel="icon" type="image/png" href="{{ asset('img/logo.png') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 </head>
+
 <body>
     <header class="bg-dark text-white py-3 d-none d-lg-block">
         <div class="container d-flex flex-column flex-lg-row justify-content-between align-items-center">
@@ -58,7 +60,7 @@
                         <a class="nav-link" href="{{ route('public.our_team') }}">JOIN OUR TEAM</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{route('rental.appointment')}}">RENTAL APPOINTMENT</a>
+                        <a class="nav-link" href="{{ route('rental.appointment') }}">RENTAL APPOINTMENT</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">CONTACT US</a>
