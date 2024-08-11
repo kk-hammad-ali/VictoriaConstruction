@@ -9,6 +9,9 @@ use App\Models\Client;
 use App\Models\History;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 
 class AdminController extends Controller
@@ -53,5 +56,31 @@ class AdminController extends Controller
         session()->forget('user');
 
         return redirect('/login');
+    }
+
+    public function changePassword(Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'old_password' => 'required',
+            'new_password' => 'required|min:8',
+        ]);
+
+        // Check if validation fails
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        // Check if old password matches
+        if (!Hash::check($request->old_password, auth()->user()->password)) {
+            return redirect()->back()->with('error_custom', 'Old password does not match.')->withInput();
+        }
+
+        // Update with new password
+        $user = auth()->user();
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        return redirect()->back()->with('password_changed_custom', 'Password successfully updated.');
     }
 }

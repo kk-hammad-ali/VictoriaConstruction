@@ -66,6 +66,7 @@ Route::post('/login', [LoginController::class, 'login'])->name('login');
 
     // Admin
 Route::get('/admin/dashboard', [AdminController::class, 'index'])->middleware('admin')->name('admin.dashboard');
+Route::post('/change-password', [AdminController::class, 'changePassword'])->name('admin.change_password');
 
 
 // Clients

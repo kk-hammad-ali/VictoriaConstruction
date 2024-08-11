@@ -148,7 +148,8 @@
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="#">
+                                <a class="dropdown-item" href="#" data-toggle="modal"
+                                    data-target="#changePasswordModal">
                                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Change Password
                                 </a>
@@ -216,6 +217,67 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog"
+        aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="changePasswordModalLabel">Change Password</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form method="POST" action="{{ route('admin.change_password') }}">
+                    @csrf
+                    <div class="modal-body">
+                        @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                        @if (session('error_custom'))
+                            <div class="alert alert-danger">
+                                {{ session('error_custom') }}
+                            </div>
+                        @endif
+                        @if (session('password_changed_custom'))
+                            <div class="alert alert-success">
+                                {{ session('password_changed_custom') }}
+                            </div>
+                        @endif
+                        <div class="form-group">
+                            <label for="old_password">Old Password</label>
+                            <input type="password" class="form-control" id="old_password" name="old_password"
+                                value="{{ old('old_password') }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="new_password">New Password</label>
+                            <input type="password" class="form-control" id="new_password" name="new_password"
+                                value="{{ old('new_password') }}" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn"
+                            style="background-color: #4ab242;color:white; font-size:18px;">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            @if (session('error_custom') || session('password_changed_custom'))
+                $('#changePasswordModal').modal('show');
+            @endif
+        });
+    </script>
 
     <!-- Bootstrap core JavaScript-->
     <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
