@@ -15,6 +15,7 @@ class CreateFlatsTable extends Migration
             $table->string('flat_number');
             $table->string('floor');
             $table->decimal('rent', 10, 2);
+            $table->tinyInteger('status')->default(0);
             $table->timestamps();
         });
     }

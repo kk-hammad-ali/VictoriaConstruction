@@ -1,6 +1,6 @@
 @extends('layout.admin')
 
-@section('title', 'All Clients History')
+@section('title', 'All Tenant History')
 
 @section('content')
     <div class="container-fluid">
@@ -20,8 +20,13 @@
                 box-sizing: border-box;
                 border: none;
             }
+
+            /* Style for the CSV download button */
+            .csv-download-btn {
+                margin-bottom: 20px;
+            }
         </style>
-        <h1 class="h3 mb-2 text-gray-800">All Clients History</h1>
+        <h1 class="h3 mb-2 text-gray-800">All Tenant History</h1>
 
         <!-- Search Form -->
         <div class="search-container">
@@ -37,14 +42,13 @@
                             <tr>
                                 <th>Sr. No</th>
                                 <th>Name</th>
-                                <th>Email</th>
-                                <th>Primary Phone Number</th>
-                                <th>Address</th>
-                                <th>Country</th>
                                 <th>Agent Name</th>
                                 <th>Flat No</th>
                                 <th>Flat Rented</th>
+                                <th>Total Amount Received</th>
+                                <th>Total Remaining Balance</th>
                                 <th>Rent Payment Date</th>
+                                <th>Option</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -52,14 +56,20 @@
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
                                     <td>{{ $client->client_name }}</td>
-                                    <td>{{ $client->client_email }}</td>
-                                    <td>{{ $client->primary_phoneNo }}</td>
-                                    <td>{{ $client->address }}</td>
-                                    <td>{{ $client->country }}</td>
                                     <td>{{ $client->agent_name ?? 'N/A' }}</td>
                                     <td>{{ $client->flat_number ?? 'N/A' }}</td>
                                     <td>${{ $client->flat_rent ?? 'N/A' }}</td>
+                                    <td>${{ $client->total_amount_received ?? 'N/A' }}</td>
+                                    <td>${{ $client->total_remaining_balance ?? 'N/A' }}</td>
                                     <td>{{ $client->payment_date ?? 'N/A' }}</td>
+                                    <td>
+                                        <div class="csv-download-btn">
+                                            <a href="{{ route('history.downloadCsv', ['id' => $client->client_email]) }}"
+                                                class="btn btn-primary mb-2">
+                                                Export
+                                            </a>
+                                        </div>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>

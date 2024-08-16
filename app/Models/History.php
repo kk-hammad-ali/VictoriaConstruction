@@ -12,6 +12,7 @@ class History extends Model
     protected $table = 'history';
 
     protected $fillable = [
+        'client_id',
         'client_name',
         'client_email',
         'primary_phoneNo',
@@ -20,6 +21,14 @@ class History extends Model
         'agent_name',
         'flat_number',
         'flat_rent',
+        'amount_received',
+        'remaining_balance',
         'payment_date',
     ];
+
+    // Optionally define relationships if needed
+    public function client()
+    {
+        return $this->belongsTo(Client::class);
+    }
 }

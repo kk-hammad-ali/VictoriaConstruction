@@ -17,6 +17,12 @@ use App\Http\Controllers\MailController;
 use App\Http\Controllers\HistoryController;
 
 
+Route::get('/', function () {
+    return view('public.index');
+})->name('home');
+
+
+
 Route::get('/admin/get-properties/{agentId}', [ClientController::class, 'getProperties'])->middleware('admin')->name('admin.get_properties');
 Route::get('/client/get-properties/{agentId}', [ClientController::class, 'getProperties'])->middleware('agent')->name('client.get_properties');
 Route::get('/admin/get-flats/{propertyId}', [ClientController::class, 'getFlats'])->middleware('admin')->name('admin.get_flats');
@@ -25,7 +31,7 @@ Route::post('/admin/pay-rent', [ClientController::class, 'payRent'])->middleware
 
 // History
 Route::get('/admin/history', [HistoryController::class, 'showHistory'])->middleware('admin')->name('admin.showHistory');
-
+Route::get('/clients/download-csv/{id}', [HistoryController::class, 'downloadCsv'])->name('history.downloadCsv');
 
 // Mails and Invoice
 Route::get('/send-received-invoice/{clientId}', [MailController::class, 'sendReceivedInvoice'])
@@ -54,15 +60,9 @@ Route::get('logoutadmin', [AdminController::class, 'adminLogout'])->middleware('
 Route::get('logoutagent', [AgentController::class, 'agentLogout'])->middleware('agent')->name('agentlogout');
 
 
-Route::get('/', function () {
-    return view('public.index');
-})->name('home');
+
 
 Route::post('/login', [LoginController::class, 'login'])->name('login');
-// Route::get('/', function () {
-    //     return view('admin.dashboard');
-    // })->name('home');
-
 
     // Admin
 Route::get('/admin/dashboard', [AdminController::class, 'index'])->middleware('admin')->name('admin.dashboard');

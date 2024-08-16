@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Property;
 use App\Models\Flat;
 use App\Models\Client;
+use App\Models\Rent;
 use PDF;
 use App\Http\Controllers\MailController;
 use App\Http\Controllers\HistoryController;
@@ -93,13 +94,6 @@ class ClientController extends Controller
         return response()->json($flats);
     }
 
-    // public function editAdminClient($id)
-    // {
-    //     // $client = Clients::findOrFail($id);
-    //     // compact('client')
-    //     return view('admin.clients.edit-clients');
-    // }
-
     public function agentAllClient()
     {
         // Fetch all clients
@@ -130,27 +124,26 @@ class ClientController extends Controller
     }
 
 
-
     public function storeClient(Request $request)
     {
-        // Validate the request data
-        $validated = $request->validate([
-            'agent' => 'required|exists:users,id',
-            'property' => 'required|exists:properties,id',
-            'flat' => 'required|exists:flats,id',
-            'identification_type' => 'required|string|max:255',
-            'license_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:8192',
-            'client_name' => 'required|string|max:255',
-            'client_id' => 'required|string|max:255|unique:clients,client_id',
-            'client_email' => 'required|string|email|max:255|unique:clients,client_email',
-            'address' => 'required|string|max:255',
-            'country' => 'required|string|max:255',
-            'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:8192',
-            'start_date' => 'required|date',  // Validate start date
-            'end_date' => 'required|date|after_or_equal:start_date',
-            'primary_phoneNo' => 'required|string|max:15',
-            'secondary_phoneNo' => 'nullable|string|max:15',
-        ]);
+                // Validate the request data
+                $validated = $request->validate([
+                    'agent' => 'required|exists:users,id',
+                    'property' => 'required|exists:properties,id',
+                    'flat' => 'required|exists:flats,id',
+                    'identification_type' => 'required|string|max:255',
+                    'license_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:8192',
+                    'client_name' => 'required|string|max:255',
+                    'client_id' => 'required|string|max:255|unique:clients,client_id',
+                    'client_email' => 'required|string|email|max:255|unique:clients,client_email',
+                    'address' => 'required|string|max:255',
+                    'country' => 'required|string|max:255',
+                    'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:8192',
+                    'start_date' => 'required|date',  // Validate start date
+                    'end_date' => 'required|date|after_or_equal:start_date',
+                    'primary_phoneNo' => 'required|string|max:15',
+                    'secondary_phoneNo' => 'nullable|string|max:15',
+                ]);
 
         // Handle picture upload
         $picturePath = null;
@@ -192,11 +185,16 @@ class ClientController extends Controller
         // Save the client
         $client->save();
 
+        // Update the flat status to rented (1)
+        $flat = Flat::find($request->input('flat'));
+        if ($flat) {
+            $flat->status = 1; // Set status to rented
+            $flat->save();
+        }
+
         // Redirect with success message
         return redirect()->route('admin.unpaid_client')->with('success_clients', 'Client added successfully.');
     }
-
-
 
     public function agentStoreClient(Request $request)
     {
@@ -262,34 +260,75 @@ class ClientController extends Controller
         return redirect()->route('agent.all_client')->with('success_clients', 'Client added successfully.');
     }
 
-
     public function payRent(Request $request)
     {
         // Validate the request
         $request->validate([
             'client_id' => 'required|exists:clients,id',
-            // other validation rules
+            'amount_received' => 'required|numeric|min:0',
         ]);
 
-        // Fetch client
+        // Fetch the client
         $client = Client::findOrFail($request->client_id);
+        $amountReceived = $request->amount_received;
 
-        // Check if the rent has already been paid
-        // if ($client->status == 1) {
-        //     return redirect()->route('admin.unpaid_client')->with('success', 'Bills already are paid.');
-        // }
+        // Get the flat rent for this client
+        $flatRent = $client->flat->rent;
 
-        $client->payment_date = now();
+        $amountDue = $flatRent;
+        $remainingBalance = $amountDue - $amountReceived;
+
+        $client->amountduethismonth = $flatRent + $remainingBalance;
+
+        // Store rent record
+        $rent = new Rent();
+        $rent->client_id = $client->id;
+        $rent->month = now()->format('F'); // Current month
+        $rent->year = now()->year;         // Current year
+        $rent->amount_due = $amountDue;
+        $rent->amount_received = $amountReceived;
+        $rent->remaining_balance = $remainingBalance;
+        $rent->payment_date = now();
+        $rent->save();
+
+        // Update client status
         $client->status = 1;
-
-        $this->mailController->sendReceivedInvoice($client->id);
-
-        $this->historyController->storeClientHistory($client->id);
-
+        $client->payment_date = now();
         $client->save();
 
-        return redirect()->route('admin.unpaid_client')->with('success', 'Bills are paid.');
+        // Call the history storage function
+        $this->historyController->storeClientHistory($client->id);
+
+        return redirect()->route('admin.unpaid_client')->with('success', 'Rent recorded and client status updated.');
     }
+
+    // public function payRent(Request $request)
+    // {
+    //     // Validate the request
+    //     $request->validate([
+    //         'client_id' => 'required|exists:clients,id',
+    //         // other validation rules
+    //     ]);
+
+    //     // Fetch client
+    //     $client = Client::findOrFail($request->client_id);
+
+    //     // Check if the rent has already been paid
+    //     // if ($client->status == 1) {
+    //     //     return redirect()->route('admin.unpaid_client')->with('success', 'Bills already are paid.');
+    //     // }
+
+    //     $client->payment_date = now();
+    //     $client->status = 1;
+
+    //     // $this->mailController->sendReceivedInvoice($client->id);
+
+    //     $this->historyController->storeClientHistory($client->id);
+
+    //     $client->save();
+
+    //     return redirect()->route('admin.unpaid_client')->with('success', 'Bills are paid.');
+    // }
 
 
     public function edit($id)

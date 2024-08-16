@@ -16,23 +16,27 @@
                                 <th>Property</th>
                                 <th>Floor</th>
                                 <th>Rent</th>
+                                <th>Status</th>
                                 <th>Options</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($flats as $index => $flat)
+                            @foreach ($flats as $index => $flat)
                                 <tr>
                                     <td>{{ $index + 1 }}</td>
                                     <td>{{ $flat->flat_number }}</td>
                                     <td>{{ $flat->property->name }}</td>
                                     <td>{{ $flat->floor }}</td>
                                     <td>{{ $flat->rent }}</td>
+                                    <td>{{ $flat->status == 1 ? 'Rented' : 'Not Rented' }}</td>
                                     <td>
                                         <a href="{{ route('admin.edit_flat', $flat->id) }}" class="btn btn-warning">Edit</a>
-                                        <form action="{{ route('admin.delete_flat', $flat->id) }}" method="POST" style="display:inline;">
+                                        <form action="{{ route('admin.delete_flat', $flat->id) }}" method="POST"
+                                            style="display:inline;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this flat?');">Delete</button>
+                                            <button type="submit" class="btn btn-danger"
+                                                onclick="return confirm('Are you sure you want to delete this flat?');">Delete</button>
                                         </form>
                                     </td>
                                 </tr>

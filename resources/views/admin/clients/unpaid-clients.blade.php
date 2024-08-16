@@ -7,10 +7,14 @@
         td {
             min-width: 100px;
         }
+
+        .input-field {
+            width: 100px;
+        }
     </style>
     <div class="container-fluid">
         <!-- Page Heading -->
-        <h1 class="h3 mb-2 text-gray-800">Unpaid Clients</h1>
+        <h1 class="h3 mb-2 text-gray-800">Unpaid Tenants</h1>
         <!-- DataTables Example -->
         <div class="card mb-5 mt-5">
             <div class="card-body">
@@ -32,8 +36,11 @@
                                 <th>Agent Name</th>
                                 <th>Flat Rented</th>
                                 <th>Rent Amount</th>
+                                <th>Rent Amount with debt</th>
                                 <th>Start Date</th>
                                 <th>End Date</th>
+                                <th>Amount Received</th>
+                                <th>Remaining Amount</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -65,22 +72,27 @@
                                     <td>{{ $client->client_email }}</td>
                                     <td>{{ $client->address }}</td>
                                     <td>{{ $client->country }}</td>
-                                    <td>{{ $client->primary_phoneNo }}</td> <!-- Display Primary Phone Number -->
+                                    <td>{{ $client->primary_phoneNo }}</td>
                                     <td>{{ $client->secondary_phoneNo ?? 'N/A' }}</td>
-                                    <!-- Display Secondary Phone Number, or 'N/A' if null -->
                                     <td>{{ $client->agent->name ?? 'N/A' }}</td>
                                     <td>{{ $client->flat->flat_number ?? 'N/A' }}</td>
                                     <td>${{ $client->flat->rent ?? 'N/A' }}</td>
+                                    <td>${{ $client->amountduethismonth }}</td>
                                     <td>{{ $client->start_date }}</td>
                                     <td>{{ $client->end_date }}</td>
                                     <td>
-                                        <a href="#" class="btn btn-success" data-bs-toggle="modal"
-                                            data-bs-target="#payRentModal" data-client-id="{{ $client->id }}">Pay
-                                            Rent</a>
+                                        <input type="number" class="form-control input-field amount-received"
+                                            data-rent="{{ $client->flat->rent ?? 0 }}" placeholder="Enter amount">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control input-field remaining-amount" readonly>
+                                    </td>
+                                    <td>
+                                        <a href="#" class="btn btn-success pay-rent-btn"
+                                            data-client-id="{{ $client->id }}"
+                                            data-client-name="{{ $client->client_name }}">Pay Rent</a>
                                         <a href="{{ route('admin.sendNotReceivedInvoice', ['clientId' => $client->id]) }}"
-                                            class="btn btn-danger mt-2">
-                                            Rent Not Received Invoice
-                                        </a>
+                                            class="btn btn-danger mt-2">Rent Not Received Invoice</a>
                                     </td>
                                 </tr>
                             @endforeach
@@ -97,9 +109,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="payRentModalLabel">Confirm Payment</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     Are you sure the rent has been paid?
@@ -109,6 +119,7 @@
                     <form id="payRentForm" method="POST" action="{{ route('admin.pay_rent') }}">
                         @csrf
                         <input type="hidden" name="client_id" id="client_id">
+                        <input type="hidden" name="amount_received" id="amount_received_input">
                         <button type="submit" class="btn btn-primary">Yes, Pay Rent</button>
                     </form>
                 </div>
@@ -122,40 +133,57 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title text-success" id="successModalLabel">Success</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body text-success">
                     {{ session('success') }}
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- JavaScript to Handle Modals -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
-    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Set client ID in the modal form when clicking "Pay Rent"
-            var payRentModal = document.getElementById('payRentModal');
-            payRentModal.addEventListener('show.bs.modal', function(event) {
-                var button = event.relatedTarget;
-                var clientId = button.getAttribute('data-client-id');
-                var form = payRentModal.querySelector('#payRentForm');
-                form.querySelector('#client_id').value = clientId;
+            // Handle calculation of remaining amount when amount received changes
+            document.querySelectorAll('.amount-received').forEach(function(input) {
+                input.addEventListener('input', function() {
+                    var amountReceived = parseFloat(this.value) || 0;
+                    var rentAmount = parseFloat(this.getAttribute('data-rent')) || 0;
+
+                    // Calculate remaining amount
+                    var remainingAmount = rentAmount - amountReceived;
+                    this.closest('tr').querySelector('.remaining-amount').value = remainingAmount
+                        .toFixed(2);
+                });
             });
 
-            // Show success modal if session success is present
+            // Handle click event on "Pay Rent" button to show the modal
+            document.querySelectorAll('.pay-rent-btn').forEach(function(button) {
+                button.addEventListener('click', function(event) {
+                    event.preventDefault(); // Prevent default link behavior
+
+                    var clientId = this.getAttribute('data-client-id');
+                    var amountReceived = this.closest('tr').querySelector('.amount-received').value;
+
+                    // Populate the hidden input fields with the client ID and amount received
+                    document.getElementById('client_id').value = clientId;
+                    document.getElementById('amount_received_input').value = amountReceived;
+
+                    // Show the Pay Rent modal
+                    var payRentModal = new bootstrap.Modal(document.getElementById('payRentModal'));
+                    payRentModal.show();
+                });
+            });
+
+            // Show the success modal if session success message exists
             @if (session('success'))
-                const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                var successModal = new bootstrap.Modal(document.getElementById('successModal'));
                 successModal.show();
             @endif
         });
     </script>
+
 @endsection

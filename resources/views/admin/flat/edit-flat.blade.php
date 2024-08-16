@@ -38,6 +38,13 @@
                                     <input type="number" class="form-control" id="rent" name="rent"
                                         placeholder="Enter Rent Amount..." value="{{ $flat->rent }}" required>
                                 </div>
+                                {{-- <div class="form-group mb-3">
+                                    <select class="form-control" id="status" name="status" required>
+                                        <option value="0" {{ $flat->status == 0 ? 'selected' : '' }}>Not Rented
+                                        </option>
+                                        <option value="1" {{ $flat->status == 1 ? 'selected' : '' }}>Rented</option>
+                                    </select>
+                                </div> --}}
                                 <div class="d-flex justify-content-center text-white">
                                     <button type="submit" class="btn btn-user btn-block w-50"
                                         style="background-color: #4ab242; font-size:18px; color:white; font-weight:bold;">Update

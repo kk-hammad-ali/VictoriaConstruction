@@ -25,7 +25,7 @@ class AdminController extends Controller
 
         foreach ($clients as $client) {
             $client->status = 0; // Mark as unpaid
-            $client->payment_date = null; // Clear the payment date
+            // $client->payment_date = null;
             $client->save();
         }
 
@@ -36,10 +36,8 @@ class AdminController extends Controller
         // Get the 5 most recent rows from History
         $clients = History::orderBy('created_at', 'desc')->limit(5)->get();
 
-        $totalEarnings = DB::table('clients')
-            ->join('flats', 'clients.flat_id', '=', 'flats.id')
-            ->whereNotNull('clients.payment_date')
-            ->sum('flats.rent');
+        $totalEarnings = DB::table('rents')->sum('amount_received');
+
 
         return view('admin.dashboard', [
             'totalAgents' => $totalAgents,

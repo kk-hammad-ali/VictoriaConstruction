@@ -10,7 +10,7 @@
                 <div class="card border-0 shadow-lg my-5">
                     <div class="card-body p-4">
                         <div class="text-center mb-4">
-                            <h1 class="h4 text-gray-900">Add New Client</h1>
+                            <h1 class="h4 text-gray-900">Add New Tenant</h1>
                         </div>
                         <form class="user" method="POST" enctype="multipart/form-data"
                             action="{{ route('admin.store_client') }}">

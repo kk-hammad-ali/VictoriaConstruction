@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Client extends Model
 {
     use HasFactory;
+
+    // Define which attributes are mass assignable
     protected $fillable = [
         'client_name',
         'client_id',
@@ -28,20 +30,27 @@ class Client extends Model
         'payment_date'
     ];
 
+    // Define the relationship with the Agent (User model)
     public function agent()
     {
         return $this->belongsTo(User::class, 'agent_id');
     }
 
+    // Define the relationship with the Property model
     public function property()
     {
         return $this->belongsTo(Property::class, 'property_id');
     }
 
+    // Define the relationship with the Flat model
     public function flat()
     {
         return $this->belongsTo(Flat::class, 'flat_id');
     }
 
-
+    // Define the relationship with the Rent model
+    public function rents()
+    {
+        return $this->hasMany(Rent::class);
+    }
 }

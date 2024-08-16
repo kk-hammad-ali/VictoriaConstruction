@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('history', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('client_id')->constrained('clients')->onDelete('cascade');
             $table->string('client_name');
             $table->string('client_email');
             $table->string('primary_phoneNo');
@@ -21,7 +22,9 @@ return new class extends Migration
             $table->string('agent_name');
             $table->string('flat_number');
             $table->decimal('flat_rent', 8, 2);
-            $table->date('payment_date')->nullable();
+            $table->decimal('amount_received', 8, 2);
+            $table->decimal('remaining_balance', 8, 2);
+            $table->date('payment_date');
             $table->timestamps();
         });
     }

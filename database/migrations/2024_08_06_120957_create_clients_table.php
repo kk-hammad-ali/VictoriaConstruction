@@ -25,11 +25,12 @@ return new class extends Migration
             $table->foreignId('flat_id')->constrained('flats')->onDelete('cascade');
             $table->string('picture')->nullable();
             $table->tinyInteger('status')->default(0);
-            $table->date('start_date');  // Add start date of rent
-            $table->date('end_date');    // Add end date of rent
+            $table->date('start_date');
+            $table->date('end_date');
             $table->string('primary_phoneNo');
             $table->string('secondary_phoneNo')->nullable();
             $table->date('payment_date')->nullable();
+            $table->decimal('amountduethismonth', 8, 2)->default(0);
             $table->timestamps();
         });
     }
@@ -42,4 +43,3 @@ return new class extends Migration
         Schema::dropIfExists('clients');
     }
 };
-

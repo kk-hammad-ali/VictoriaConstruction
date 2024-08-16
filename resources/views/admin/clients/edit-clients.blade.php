@@ -10,7 +10,7 @@
                 <div class="card border-0 shadow-lg my-5">
                     <div class="card-body p-4">
                         <div class="text-center mb-4">
-                            <h1 class="h4 text-gray-900">Edit Client</h1>
+                            <h1 class="h4 text-gray-900">Edit Tenant</h1>
                         </div>
                         <form class="user" method="POST" enctype="multipart/form-data"
                             action="{{ route('admin.update_client', $client->id) }}">
@@ -234,7 +234,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
     </script>
 
 
@@ -286,13 +286,12 @@
             }
 
             @if (session('success_clients_edit'))
-            const successModal = new bootstrap.Modal(document.getElementById('successModal'));
-            successModal.show();
-        @endif
+                const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                successModal.show();
+            @endif
         });
 
         // Show success modal if session success is present
-
     </script>
 
 

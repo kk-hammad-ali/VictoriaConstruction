@@ -49,7 +49,7 @@
         <div class="card p-4 shadow-sm">
             <div class="d-flex justify-content-between mb-4">
                 <div>
-                    <img class="mb-3" src="{{ $logoUrl }}" alt="Company Logo" width="150">
+                    <p>Victoria Properties</p>
                     <p>123 Main Street, Cityville, Country</p>
                     <p><strong>Email:</strong> info@company.com</p>
                     <p><strong>Phone:</strong> +1 234-567-8901</p>

@@ -35,6 +35,12 @@
                                     <input type="number" class="form-control" id="rent" name="rent"
                                         placeholder="Enter Rent Amount..." required>
                                 </div>
+                                {{-- <div class="form-group mb-3">
+                                    <select class="form-control" id="status" name="status" required>
+                                        <option value="0">Not Rented</option>
+                                        <option value="1">Rented</option>
+                                    </select>
+                                </div> --}}
                                 <div class="d-flex justify-content-center">
                                     <button type="submit" class="btn btn-primary btn-user btn-block">
                                         Add New Flat

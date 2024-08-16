@@ -10,7 +10,7 @@
                 min-width: 100px;
             }
         </style>
-        <h1 class="h3 mb-2 text-gray-800">All Clients</h1>
+        <h1 class="h3 mb-2 text-gray-800">All Tenant</h1>
         <!-- DataTables Example -->
         <div class="card mb-5 mt-5">
             <div class="card-body">
@@ -32,6 +32,7 @@
                                 <th>Agent Name</th>
                                 <th>Flat Rented</th>
                                 <th>Rent Amount</th>
+                                <th>Rent Amount with debt</th>
                                 <th>Start Date</th>
                                 <th>End Date</th>
                                 <th>Action</th>
@@ -65,12 +66,12 @@
                                     <td>{{ $client->client_email }}</td>
                                     <td>{{ $client->primary_phoneNo }}</td>
                                     <td>{{ $client->secondary_phoneNo ?? 'N/A' }}</td>
-                                    <!-- Display 'N/A' if secondary phone number is not provided -->
                                     <td>{{ $client->address }}</td>
                                     <td>{{ $client->country }}</td>
                                     <td>{{ $client->agent->name ?? 'N/A' }}</td>
                                     <td>{{ $client->flat->flat_number ?? 'N/A' }}</td>
                                     <td>${{ $client->flat->rent ?? 'N/A' }}</td>
+                                    <td>${{ $client->amountduethismonth }}</td>
                                     <td>{{ $client->start_date }}</td>
                                     <td>{{ $client->end_date }}</td>
                                     <td style="min-width: 180px">

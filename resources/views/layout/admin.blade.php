@@ -48,8 +48,8 @@
                 </a>
                 <div id="agents" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="{{ route('admin.all_agent') }}">All Agents</a>
                         <a class="collapse-item" href="{{ route('admin.add_agent') }}">Add Agents</a>
+                        <a class="collapse-item" href="{{ route('admin.all_agent') }}">All Agents</a>
                     </div>
                 </div>
             </li>
@@ -57,14 +57,14 @@
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#clients"
                     aria-expanded="true" aria-controls="clients">
                     <i class="fas fa-fw fa-user"></i>
-                    <span>Clients</span>
+                    <span>Tenant</span>
                 </a>
                 <div id="clients" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="{{ route('admin.all_client') }}">All Clients</a>
-                        <a class="collapse-item" href="{{ route('admin.add_client') }}">Add Clients</a>
-                        <a class="collapse-item" href="{{ route('admin.unpaid_client') }}">Unpaid Clients</a>
-                        <a class="collapse-item" href="{{ route('admin.paid_client') }}">Paid Clients</a>
+                        <a class="collapse-item" href="{{ route('admin.add_client') }}">Add Tenant</a>
+                        <a class="collapse-item" href="{{ route('admin.all_client') }}">All Tenant</a>
+                        <a class="collapse-item" href="{{ route('admin.unpaid_client') }}">Unpaid Tenant</a>
+                        <a class="collapse-item" href="{{ route('admin.paid_client') }}">Paid Tenant</a>
                         <a class="collapse-item" href="{{ route('admin.showHistory') }}">Histroy</a>
                     </div>
                 </div>
@@ -77,8 +77,8 @@
                 </a>
                 <div id="property" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="{{ route('admin.all_property') }}">All Property</a>
                         <a class="collapse-item" href="{{ route('admin.add_property') }}">Add Property</a>
+                        <a class="collapse-item" href="{{ route('admin.all_property') }}">All Property</a>
                     </div>
                 </div>
             </li>
@@ -91,8 +91,8 @@
                 </a>
                 <div id="flat" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="{{ route('admin.all_flat') }}">All Flat</a>
                         <a class="collapse-item" href="{{ route('admin.add_flat') }}">Add Flat</a>
+                        <a class="collapse-item" href="{{ route('admin.all_flat') }}">All Flat</a>
                     </div>
                 </div>
             </li>
