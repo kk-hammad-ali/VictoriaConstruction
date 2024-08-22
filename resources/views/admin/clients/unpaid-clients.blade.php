@@ -91,7 +91,7 @@
                                         <a href="#" class="btn btn-success pay-rent-btn"
                                             data-client-id="{{ $client->id }}"
                                             data-client-name="{{ $client->client_name }}">Pay Rent</a>
-                                        <a href="{{ route('admin.sendNotReceivedInvoice', ['clientId' => $client->id]) }}"
+                                        <a href="{{ route('admin.viewNotReceivedInvoice', ['clientId' => $client->id]) }}"
                                             class="btn btn-danger mt-2">Rent Not Received Invoice</a>
                                     </td>
                                 </tr>

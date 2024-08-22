@@ -68,7 +68,7 @@
                     <h2>Client Details</h2>
                     <p><strong>Name:</strong> {{ $client->client_name }}</p>
                     <p><strong>Email:</strong> {{ $client->client_email }}</p>
-                    <p><strong>Address:</strong> {{ $client->address }}, {{ $client->country }}</p>
+                    {{-- <p><strong>Address:</strong> {{ $client->address }}, {{ $client->country }}</p> --}}
                     <p><strong>Phone:</strong> {{ $client->primary_phoneNo }}</p>
                 </div>
                 <div class="col-12 col-md-6 text-end">
@@ -76,7 +76,7 @@
                     <p><strong>Name:</strong> {{ $client->agent->name }}</p>
                     <p><strong>Email:</strong> {{ $client->agent->email }}</p>
                     <p><strong>Phone:</strong> {{ $client->agent->phone }}</p>
-                    <p><strong>Address:</strong> {{ $client->agent->address }}</p>
+                    {{-- <p><strong>Address:</strong> {{ $client->agent->address }}</p> --}}
                 </div>
             </div>
             <hr> <!-- Divider -->

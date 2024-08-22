@@ -1,6 +1,6 @@
 @extends('layout.agent')
 
-@section('title', 'Add Client')
+@section('title', 'Add Tenant')
 
 @section('content')
     <div class="container">
@@ -9,7 +9,7 @@
                 <div class="card border-0 shadow-lg my-5">
                     <div class="card-body p-4">
                         <div class="text-center mb-4">
-                            <h1 class="h4 text-gray-900">Add New Client</h1>
+                            <h1 class="h4 text-gray-900">Add New Tenant</h1>
                         </div>
                         <form class="user" method="POST" enctype="multipart/form-data"
                             action="{{ route('agent.store_client') }}">
@@ -183,7 +183,7 @@
 
                             <div class="d-flex justify-content-center">
                                 <button type="submit" class="btn btn-primary btn-user btn-block">
-                                    Add New Client
+                                    Add New Tenant
                                 </button>
                             </div>
                         </form>

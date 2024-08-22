@@ -1,6 +1,6 @@
 @extends('layout.admin')
 
-@section('title', 'Add Client')
+@section('title', 'Add Old Tenant')
 
 @section('content')
 
@@ -10,10 +10,10 @@
                 <div class="card border-0 shadow-lg my-5">
                     <div class="card-body p-4">
                         <div class="text-center mb-4">
-                            <h1 class="h4 text-gray-900">Add New Tenant</h1>
+                            <h1 class="h4 text-gray-900">Add Old Tenant</h1>
                         </div>
                         <form class="user" method="POST" enctype="multipart/form-data"
-                            action="{{ route('admin.store_client') }}">
+                            action="{{ route('admin.store_old_client') }}">
                             @csrf
                             <div class="form-group mb-3">
                                 <label for="agent">Select Agent</label>
@@ -173,7 +173,7 @@
                             </div>
                             <div class="d-flex justify-content-center">
                                 <button type="submit" class="btn btn-primary btn-user btn-block">
-                                    Add New Tenant
+                                    Add OLd Tenant
                                 </button>
                             </div>
                         </form>

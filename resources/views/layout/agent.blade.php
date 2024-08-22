@@ -42,12 +42,12 @@
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#clients"
                     aria-expanded="true" aria-controls="clients">
                     <i class="fas fa-fw fa-user"></i>
-                    <span>Clients</span>
+                    <span>Tenants</span>
                 </a>
                 <div id="clients" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="{{ route('agent.add_client') }}">Add Clients</a>
-                        <a class="collapse-item" href="{{ route('agent.all_client') }}">All Clients</a>
+                        <a class="collapse-item" href="{{ route('agent.add_client') }}">Add Tenant</a>
+                        <a class="collapse-item" href="{{ route('agent.all_client') }}">All Tenant</a>
                         {{-- <a class="collapse-item" href="{{ route('agent.unpaid_client') }}">Unpaid Clients</a> --}}
                         {{-- <a class="collapse-item" href="{{ route('agent.paid_client') }}">Paid Clients</a> --}}
                     </div>

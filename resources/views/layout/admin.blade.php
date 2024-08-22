@@ -66,6 +66,9 @@
                         <a class="collapse-item" href="{{ route('admin.unpaid_client') }}">Unpaid Tenant</a>
                         <a class="collapse-item" href="{{ route('admin.paid_client') }}">Paid Tenant</a>
                         <a class="collapse-item" href="{{ route('admin.showHistory') }}">Histroy</a>
+                        <a class="collapse-item" href="{{ route('admin.add_old_client') }}">Add Old Tenant</a>
+                        <a class="collapse-item" href="{{ route('admin.add_old_client_data') }}">Add Old Tenant
+                            Data</a>
                     </div>
                 </div>
             </li>

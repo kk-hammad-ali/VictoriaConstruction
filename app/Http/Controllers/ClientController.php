@@ -81,6 +81,61 @@ class ClientController extends Controller
         return view('admin.clients.add-clients', compact('agents'));
     }
 
+    public function adminOldAddClient()
+    {
+        $agents = User::where('role', 1)->pluck('name', 'id');
+        return view('admin.clients.old-clients', compact('agents'));
+    }
+
+    public function adminOldDataAddClient()
+    {
+        $clients = Client::select('id', 'client_name')->get();
+        return view('admin.clients.old-client-data', compact('clients'));
+        // return view('admin.clients.old-client-data');
+    }
+
+    public function storeOldClientData(Request $request)
+    {
+        // Validate the base fields
+        $validated = $request->validate([
+            'client_id' => 'required|exists:clients,id',
+            'number_of_entries' => 'required|integer|min:1',
+        ]);
+
+        // Get the client ID and number of entries
+        $clientId = $validated['client_id'];
+        $numberOfEntries = $validated['number_of_entries'];
+
+        // Loop through each rent entry and validate the fields manually
+        for ($i = 1; $i <= $numberOfEntries; $i++) {
+            // Validate each set of dynamic fields
+            $validatedData = $request->validate([
+                "rent_month_$i" => 'required|string',
+                "rent_year_$i" => 'required|integer',
+                "rent_amount_due_$i" => 'required|numeric',
+                "rent_amount_received_$i" => 'nullable|numeric',
+                "rent_remaining_balance_$i" => 'nullable|numeric',
+                "rent_payment_date_$i" => 'nullable|date',
+            ]);
+
+            // Store each rent entry in the database
+            Rent::create([
+                'client_id' => $clientId,
+                'month' => $validatedData["rent_month_$i"],
+                'year' => $validatedData["rent_year_$i"],
+                'amount_due' => $validatedData["rent_amount_due_$i"],
+                'amount_received' => $validatedData["rent_amount_received_$i"] ?? null,
+                'remaining_balance' => $validatedData["rent_remaining_balance_$i"] ?? null,
+                'payment_date' => $validatedData["rent_payment_date_$i"] ?? null,
+            ]);
+
+            $this->historyController->storeClientHistory($clientId);
+        }
+
+        return redirect()->route('admin.all_client')->with('success', 'Old tenant data added successfully.');
+    }
+
+
 
     public function getProperties($agentId)
     {
@@ -104,7 +159,7 @@ class ClientController extends Controller
     }
     public function adminAllClient()
     {
-        // Fetch all clients
+
         $clients = Client::all();
 
         // Pass the clients to the view
@@ -125,6 +180,79 @@ class ClientController extends Controller
 
 
     public function storeClient(Request $request)
+    {
+                // Validate the request data
+                $validated = $request->validate([
+                    'agent' => 'required|exists:users,id',
+                    'property' => 'required|exists:properties,id',
+                    'flat' => 'required|exists:flats,id',
+                    'identification_type' => 'required|string|max:255',
+                    'license_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:8192',
+                    'client_name' => 'required|string|max:255',
+                    'client_id' => 'required|string|max:255|unique:clients,client_id',
+                    'client_email' => 'required|string|email|max:255|unique:clients,client_email',
+                    'address' => 'required|string|max:255',
+                    'country' => 'required|string|max:255',
+                    'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:8192',
+                    'start_date' => 'required|date',  // Validate start date
+                    'end_date' => 'required|date|after_or_equal:start_date',
+                    'primary_phoneNo' => 'required|string|max:15',
+                    'secondary_phoneNo' => 'nullable|string|max:15',
+                ]);
+
+        // Handle picture upload
+        $picturePath = null;
+        if ($request->hasFile('picture')) {
+            $file = $request->file('picture');
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('images/clients/'), $filename);
+            $picturePath = 'images/clients/' . $filename;
+        }
+
+        // Handle license picture upload
+        $licensePicturePath = null;
+        if ($request->hasFile('license_picture')) {
+            $file = $request->file('license_picture');
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('images/license/'), $filename);
+            $licensePicturePath = 'images/license/' . $filename;
+        }
+
+        // Create a new Client instance
+        $client = new Client();
+        $client->client_name = $request->input('client_name');
+        $client->client_id = $request->input('client_id');
+        $client->client_email = $request->input('client_email');
+        $client->identification_type = $request->input('identification_type');
+        $client->address = $request->input('address');
+        $client->country = $request->input('country');
+        $client->agent_id = $request->input('agent');
+        $client->property_id = $request->input('property');
+        $client->flat_id = $request->input('flat');
+        $client->picture = $picturePath;
+        $client->license_picture = $licensePicturePath;
+        $client->start_date = $request->input('start_date');
+        $client->end_date = $request->input('end_date');
+        $client->primary_phoneNo = $request->input('primary_phoneNo');
+        $client->secondary_phoneNo = $request->input('secondary_phoneNo', null);
+        $client->status = 0; // Default status value
+
+        // Save the client
+        $client->save();
+
+        // Update the flat status to rented (1)
+        $flat = Flat::find($request->input('flat'));
+        if ($flat) {
+            $flat->status = 1; // Set status to rented
+            $flat->save();
+        }
+
+        // Redirect with success message
+        return redirect()->route('admin.unpaid_client')->with('success_clients', 'Client added successfully.');
+    }
+
+
+    public function storeOldClient(Request $request)
     {
                 // Validate the request data
                 $validated = $request->validate([
@@ -192,8 +320,10 @@ class ClientController extends Controller
             $flat->save();
         }
 
+        $this->historyController->storeClientHistory($client->id);
+
         // Redirect with success message
-        return redirect()->route('admin.unpaid_client')->with('success_clients', 'Client added successfully.');
+        return redirect()->route('admin.all_client')->with('success_clients', 'Old Client added successfully.');
     }
 
     public function agentStoreClient(Request $request)
@@ -301,35 +431,6 @@ class ClientController extends Controller
 
         return redirect()->route('admin.unpaid_client')->with('success', 'Rent recorded and client status updated.');
     }
-
-    // public function payRent(Request $request)
-    // {
-    //     // Validate the request
-    //     $request->validate([
-    //         'client_id' => 'required|exists:clients,id',
-    //         // other validation rules
-    //     ]);
-
-    //     // Fetch client
-    //     $client = Client::findOrFail($request->client_id);
-
-    //     // Check if the rent has already been paid
-    //     // if ($client->status == 1) {
-    //     //     return redirect()->route('admin.unpaid_client')->with('success', 'Bills already are paid.');
-    //     // }
-
-    //     $client->payment_date = now();
-    //     $client->status = 1;
-
-    //     // $this->mailController->sendReceivedInvoice($client->id);
-
-    //     $this->historyController->storeClientHistory($client->id);
-
-    //     $client->save();
-
-    //     return redirect()->route('admin.unpaid_client')->with('success', 'Bills are paid.');
-    // }
-
 
     public function edit($id)
     {

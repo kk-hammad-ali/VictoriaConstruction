@@ -73,11 +73,16 @@ Route::post('/change-password', [AdminController::class, 'changePassword'])->nam
 Route::get('/admin/all/unpaid-clients', [ClientController::class, 'adminUnpaidClient'])->middleware('admin')->name('admin.unpaid_client');
 Route::get('/admin/all/paid-clients', [ClientController::class, 'adminPaidClient'])->middleware('admin')->name('admin.paid_client');
 Route::get('/admin/add-client', [ClientController::class, 'adminAddClient'])->middleware('admin')->name('admin.add_client');
+Route::get('/admin/add-old-client', [ClientController::class, 'adminOldAddClient'])->middleware('admin')->name('admin.add_old_client');
 Route::post('/admin/add-client', [ClientController::class, 'storeClient'])->middleware('admin')->name('admin.store_client');
+Route::post('/admin/add-old-client', [ClientController::class, 'storeOldClient'])->middleware('admin')->name('admin.store_old_client');
 Route::get('/admin/edit-client/{id}', [ClientController::class, 'edit'])->middleware('admin')->name('admin.edit_client');
 Route::delete('/admin/clients/{id}', [ClientController::class, 'destroy'])->name('admin.destroy_client');
 Route::post('/admin/clients/{id}', [ClientController::class, 'update'])->name('admin.update_client');
 Route::get('/admin/all/clients', [ClientController::class, 'adminAllClient'])->middleware('admin')->name('admin.all_client');
+
+Route::get('/admin/add-old-client-data', [ClientController::class, 'adminOldDataAddClient'])->middleware('admin')->name('admin.add_old_client_data');
+Route::post('/admin/store-old-client-data', [ClientController::class, 'storeOldClientData'])->middleware('admin')->name('admin.store_old_client_data');
 
 
 Route::get('/agent/add-client', [ClientController::class, 'agentAddClient'])->middleware('agent')->name('agent.add_client');
