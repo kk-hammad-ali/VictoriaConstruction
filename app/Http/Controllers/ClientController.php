@@ -220,6 +220,7 @@ class ClientController extends Controller
                     'end_date' => 'required|date|after_or_equal:start_date',
                     'primary_phoneNo' => 'required|string|max:15',
                     'secondary_phoneNo' => 'nullable|string|max:15',
+
                 ]);
 
         // Handle picture upload
@@ -294,6 +295,7 @@ class ClientController extends Controller
                     'end_date' => 'required|date|after_or_equal:start_date',
                     'primary_phoneNo' => 'required|string|max:15',
                     'secondary_phoneNo' => 'nullable|string|max:15',
+                    'client_status' => 'required|boolean',
                 ]);
 
         // Handle picture upload
@@ -332,7 +334,7 @@ class ClientController extends Controller
         $client->primary_phoneNo = $request->input('primary_phoneNo');
         $client->secondary_phoneNo = $request->input('secondary_phoneNo', null);
         $client->status = 0; // Default status value
-        $client->client_status = 0; // Default client status (living)
+        $client->client_status = $request->input('client_status');
 
         // Save the client
         $client->save();

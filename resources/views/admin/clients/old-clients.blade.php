@@ -171,6 +171,21 @@
                                     <div class="text-danger mt-2">{{ $message }}</div>
                                 @enderror
                             </div>
+                            <div class="form-group mb-3">
+                                <label for="client_status">Client Status</label>
+                                <select class="form-control @error('client_status') is-invalid @enderror"
+                                    id="client_status" name="client_status" required>
+                                    <option value="" disabled selected>Select Client Status...</option>
+                                    <option value="1" {{ old('client_status') == '1' ? 'selected' : '' }}>Living
+                                    </option>
+                                    <option value="0" {{ old('client_status') == '0' ? 'selected' : '' }}>Old
+                                    </option>
+                                </select>
+                                @error('client_status')
+                                    <div class="text-danger mt-2">{{ $message }}</div>
+                                @enderror
+                            </div>
+
                             <div class="d-flex justify-content-center">
                                 <button type="submit" class="btn btn-primary btn-user btn-block">
                                     Add OLd Tenant

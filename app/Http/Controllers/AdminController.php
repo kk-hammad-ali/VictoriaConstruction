@@ -16,38 +16,47 @@ use Illuminate\Support\Facades\Validator;
 
 class AdminController extends Controller
 {
+
     public function index()
     {
+        // Mark clients with old payment dates as unpaid
         $clients = Client::whereNotNull('payment_date')
-        ->whereDate('payment_date', '<=', Carbon::now()->subDays(28))
-        ->where('status', 1)
-        ->get();
+                        ->whereDate('payment_date', '<=', Carbon::now()->subDays(28))
+                        ->where('status', 1)
+                        ->get();
 
         foreach ($clients as $client) {
             $client->status = 0; // Mark as unpaid
+            // Optionally clear the payment_date
             // $client->payment_date = null;
             $client->save();
         }
 
+        // Retrieve dashboard statistics
         $totalAgents = User::where('role', 1)->count();
         $totalProperties = Property::count();
         $totalClients = Client::count();
-
-        // Get the 5 most recent rows from History
-        $clients = History::orderBy('created_at', 'desc')->limit(5)->get();
-
         $totalEarnings = DB::table('rents')->sum('amount_received');
 
+        // Get the 5 most recent rows from History with clients having client_status = 1
+        $recentClients = History::join('clients', 'history.client_id', '=', 'clients.id')
+                                ->where('clients.status', 1) // Filter by client_status
+                                ->orderBy('history.created_at', 'desc')
+                                ->limit(5)
+                                ->get([
+                                    'history.*', // Select all fields from history
+                                    'clients.client_name', // Optionally select fields from clients
+                                    'clients.client_email'
+                                ]);
 
         return view('admin.dashboard', [
             'totalAgents' => $totalAgents,
             'totalProperties' => $totalProperties,
             'totalClients' => $totalClients,
             'totalEarnings' => $totalEarnings,
-            'clients' => $clients,
+            'clients' => $recentClients,
         ]);
     }
-
 
     public function adminLogout(){
         session()->forget('admin_id');
