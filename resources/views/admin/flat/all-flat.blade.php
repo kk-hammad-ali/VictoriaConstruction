@@ -30,14 +30,31 @@
                                     <td>{{ $flat->rent }}</td>
                                     <td>{{ $flat->status == 1 ? 'Rented' : 'Not Rented' }}</td>
                                     <td>
-                                        <a href="{{ route('admin.edit_flat', $flat->id) }}" class="btn btn-warning">Edit</a>
-                                        <form action="{{ route('admin.delete_flat', $flat->id) }}" method="POST"
-                                            style="display:inline;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger"
-                                                onclick="return confirm('Are you sure you want to delete this flat?');">Delete</button>
-                                        </form>
+                                        <div class="d-flex">
+                                            <a href="{{ route('admin.edit_flat', $flat->id) }}"
+                                                class="btn btn-warning">Edit</a>
+
+                                            @if ($flat->status == 1)
+                                                <form action="{{ route('admin.release_flat', $flat->id) }}" method="POST"
+                                                    style="display:inline;">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <button type="submit" class="btn btn-secondary"
+                                                        style="margin-left: 10px;"
+                                                        onclick="return confirm('Are you sure you want to release this flat?');">
+                                                        Release
+                                                    </button>
+                                                </form>
+                                            @endif
+
+                                            <form action="{{ route('admin.delete_flat', $flat->id) }}" method="POST"
+                                                style="display:inline;">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger" style="margin-left: 10px;"
+                                                    onclick="return confirm('Are you sure you want to delete this flat?');">Delete</button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach

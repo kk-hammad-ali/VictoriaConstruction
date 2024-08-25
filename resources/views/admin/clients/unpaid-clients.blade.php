@@ -133,7 +133,8 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title text-success" id="successModalLabel">Success</h5>
-                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <!-- Updated button with correct classes -->
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body text-success">
                     {{ session('success') }}
@@ -144,6 +145,7 @@
             </div>
         </div>
     </div>
+
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

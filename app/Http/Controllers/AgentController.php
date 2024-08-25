@@ -11,7 +11,8 @@ class AgentController extends Controller
 {
     public function index()
     {
-        $agents = User::where('role', 1)->get();
+        $agents = User::where('role', 1)->with(['properties.flats'])->get();
+
         return view('admin.agents.all-agents', compact('agents'));
     }
 
@@ -50,7 +51,7 @@ class AgentController extends Controller
         $user->phone = $request->phone;
         $user->address = $request->address;
         $user->plain_text_password = $password;
-        $user->role = 1; // Set as agent
+        $user->role = 1;
 
         if ($request->hasFile('picture')) {
             $file = $request->file('picture');

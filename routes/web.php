@@ -32,6 +32,7 @@ Route::post('/admin/pay-rent', [ClientController::class, 'payRent'])->middleware
 // History
 Route::get('/admin/history', [HistoryController::class, 'showHistory'])->middleware('admin')->name('admin.showHistory');
 Route::get('/clients/download-csv/{id}', [HistoryController::class, 'downloadCsv'])->name('history.downloadCsv');
+Route::get('history/downloadPdf/{id}', [HistoryController::class, 'downloadPdf'])->name('history.downloadPdf');
 
 // Mails and Invoice
 Route::get('/send-received-invoice/{clientId}', [MailController::class, 'sendReceivedInvoice'])
@@ -81,6 +82,8 @@ Route::delete('/admin/clients/{id}', [ClientController::class, 'destroy'])->name
 Route::post('/admin/clients/{id}', [ClientController::class, 'update'])->name('admin.update_client');
 Route::get('/admin/all/clients', [ClientController::class, 'adminAllClient'])->middleware('admin')->name('admin.all_client');
 
+Route::get('/admin/release-client/{id}', [ClientController::class, 'releaseClient'])->name('admin.release_client');
+
 Route::get('/admin/add-old-client-data', [ClientController::class, 'adminOldDataAddClient'])->middleware('admin')->name('admin.add_old_client_data');
 Route::post('/admin/store-old-client-data', [ClientController::class, 'storeOldClientData'])->middleware('admin')->name('admin.store_old_client_data');
 
@@ -114,6 +117,8 @@ Route::post('/admin/store-flat', [FlatController::class, 'store'])->middleware('
 Route::get('/admin/edit-flat/{id}', [FlatController::class, 'editFlat'])->middleware('admin')->name('admin.edit_flat');
 Route::put('/admin/update-flat/{id}', [FlatController::class, 'update'])->middleware('admin')->name('admin.update_flat');
 Route::delete('/admin/delete-flat/{id}', [FlatController::class, 'destroy'])->middleware('admin')->name('admin.delete_flat');
+Route::patch('/admin/release-flat/{id}', [FlatController::class, 'releaseFlat'])->middleware('admin')->name('admin.release_flat');
+
 
 // Agent
 Route::get('/agent/dashboard', [AgentPanelController::class, 'index'])->middleware('agent')->name('agent.dashboard');

@@ -7,6 +7,7 @@ use App\Models\Client;
 use App\Models\History;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class HistoryController extends Controller
 {
@@ -109,6 +110,27 @@ class HistoryController extends Controller
 
         // Return the CSV file as a download
         return Response::download($filename, $filename, $headers);
+    }
+
+    public function downloadPdf($id)
+    {
+        // Fetch the client's history records based on the email
+        $clientHistory = History::where('client_email', $id)->get();
+
+        // Prepare the data for the PDF
+        $pdfData = [
+            'clients' => $clientHistory,
+            'clientName' => $clientHistory->first()->client_name ?? 'Unknown',
+        ];
+
+        // Load the view with the data
+        $pdf = PDF::loadView('admin.history.history-pdf', $pdfData);
+
+        // Define the filename
+        $filename = $pdfData['clientName'] . '_tenant_data.pdf';
+
+        // Return the PDF file as a download
+        return $pdf->download($filename);
     }
 
 }

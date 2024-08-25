@@ -73,4 +73,18 @@ class FlatController extends Controller
 
         return redirect()->route('admin.all_flat')->with('success', 'Flat deleted successfully.');
     }
+
+    public function releaseFlat($id)
+    {
+        $flat = Flat::findOrFail($id);
+
+        if ($flat->status == 1) { // If the flat is occupied
+            $flat->status = 0; // Set status to 'Not Rented'
+            $flat->save();
+
+            return redirect()->route('admin.all_flat')->with('success', 'Flat released successfully.');
+        }
+
+        return redirect()->route('admin.all_flat')->with('error', 'Flat is already not rented.');
+    }
 }

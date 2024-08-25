@@ -19,6 +19,7 @@
                         <thead>
                             <tr>
                                 <th>Sr. No</th>
+                                <th>Client Status</th>
                                 <th>Name</th>
                                 <th>Picture</th>
                                 <th>License Picture</th>
@@ -42,6 +43,9 @@
                             @foreach ($clients as $key => $client)
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
+                                    <td>
+                                        {{ $client->client_status == 1 ? 'Living' : 'Old' }} <!-- Display Status -->
+                                    </td>
                                     <td>{{ $client->client_name }}</td>
                                     <td>
                                         @if ($client->picture)
@@ -79,7 +83,12 @@
                                             class="me-3 btn btn-warning">Edit</a>
                                         <a href="#" class="btn btn-danger" data-bs-toggle="modal"
                                             data-bs-target="#DeleteModal" data-client-id="{{ $client->id }}">Delete</a>
+                                        @if ($client->client_status == 1)
+                                            <a href="{{ route('admin.release_client', $client->id) }}"
+                                                class="btn btn-success mt-2">Release</a>
+                                        @endif
                                     </td>
+
                                 </tr>
                             @endforeach
                         </tbody>

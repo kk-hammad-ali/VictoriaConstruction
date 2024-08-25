@@ -28,12 +28,32 @@ class ClientController extends Controller
 
     public function adminUnpaidClient()
     {
-        // Fetch clients with status 0
+        // Fetch clients with status 0 and client_status 1
         $clients = Client::where('status', 0)
+                         ->where('client_status', 1)
                          ->with(['agent', 'flat'])
                          ->get();
 
         return view('admin.clients.unpaid-clients', compact('clients'));
+    }
+
+
+    public function releaseClient($id)
+    {
+        // Find the client by ID
+        $client = Client::findOrFail($id);
+
+        // Update the client's status
+        $client->client_status = 0;
+        $client->save();
+
+        // Update the status of the rented flat
+        $flat = Flat::findOrFail($client->flat_id);
+        $flat->status = 0; // Mark as available
+        $flat->save();
+
+        // Redirect back with a success message
+        return redirect()->route('admin.all_client')->with('success_clients_release', 'Client released and flat status updated.');
     }
 
     public function adminPaidClient()
@@ -51,14 +71,16 @@ class ClientController extends Controller
     {
         $agentId = auth()->id();
 
-        // Fetch clients with status 0 and the authenticated agent ID
+        // Fetch clients with status 0, client_status 1, and the authenticated agent ID
         $clients = Client::where('status', 0)
+                         ->where('client_status', 1)
                          ->where('agent_id', $agentId)
                          ->with(['agent', 'flat'])
                          ->get();
 
         return view('agent.client.unpaid-clients', compact('clients'));
     }
+
 
 
     public function agentPaidClient()
@@ -236,6 +258,7 @@ class ClientController extends Controller
         $client->primary_phoneNo = $request->input('primary_phoneNo');
         $client->secondary_phoneNo = $request->input('secondary_phoneNo', null);
         $client->status = 0; // Default status value
+        $client->client_status = 1; // Default client status (living)
 
         // Save the client
         $client->save();
@@ -309,6 +332,7 @@ class ClientController extends Controller
         $client->primary_phoneNo = $request->input('primary_phoneNo');
         $client->secondary_phoneNo = $request->input('secondary_phoneNo', null);
         $client->status = 0; // Default status value
+        $client->client_status = 0; // Default client status (living)
 
         // Save the client
         $client->save();
@@ -374,6 +398,7 @@ class ClientController extends Controller
         $client->end_date = $request->input('end_date'); // Store end date
         $client->primary_phoneNo = $request->input('primary_phoneNo');
         $client->secondary_phoneNo = $request->input('secondary_phoneNo', null);
+        $client->client_status = 1; // Default client status (living)
 
         // Handle license picture file upload
         if ($request->hasFile('license_picture')) {

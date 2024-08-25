@@ -66,8 +66,10 @@
                                         <div class="csv-download-btn">
                                             <a href="{{ route('history.downloadCsv', ['id' => $client->client_email]) }}"
                                                 class="btn btn-primary mb-2">
-                                                Export
+                                                CSV
                                             </a>
+                                            <a href="{{ route('history.downloadPdf', ['id' => $client->client_email]) }}"
+                                                class="btn btn-primary mb-2">PDF</a>
                                         </div>
                                     </td>
                                 </tr>

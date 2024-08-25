@@ -31,6 +31,7 @@
                                 <th>Password</th>
                                 <th>Phone</th>
                                 <th>Address</th>
+                                <th>Total Properties / Flat</th>
                                 <th>Options</th>
                             </tr>
                         </thead>
@@ -53,8 +54,16 @@
                                     <td>{{ $agent->phone }}</td>
                                     <td>{{ $agent->address }}</td>
                                     <td>
+                                        @foreach ($agent->properties as $property)
+                                            @foreach ($property->flats as $flat)
+                                                {{ $flat->flat_number }}{{ !$loop->last ? ', ' : '' }}
+                                            @endforeach
+                                        @endforeach
+                                    </td>
+                                    <td>
                                         <div class="d-flex justify-content-around">
-                                            <a href="{{ route('admin.edit_agent', $agent->id) }}"
+                                            <a style="margin-right: 10px;"
+                                                href="{{ route('admin.edit_agent', $agent->id) }}"
                                                 class="btn btn-warning">Edit</a>
                                             <form action="{{ route('admin.delete_agent', $agent->id) }}" method="POST"
                                                 style="display:inline;">

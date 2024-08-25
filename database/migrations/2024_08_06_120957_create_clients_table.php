@@ -25,6 +25,7 @@ return new class extends Migration
             $table->foreignId('flat_id')->constrained('flats')->onDelete('cascade');
             $table->string('picture')->nullable();
             $table->tinyInteger('status')->default(0);
+            $table->tinyInteger('client_status')->default(1);
             $table->date('start_date');
             $table->date('end_date');
             $table->string('primary_phoneNo');
