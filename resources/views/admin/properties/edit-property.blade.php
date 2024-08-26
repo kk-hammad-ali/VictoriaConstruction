@@ -19,10 +19,6 @@
                                         placeholder="Enter Property Name..." value="{{ $property->name }}" required>
                                 </div>
                                 <div class="form-group mb-3">
-                                    <input type="text" class="form-control" id="agent" name="agent"
-                                        placeholder="Enter Agent Name..." value="{{ $property->agent }}" required>
-                                </div>
-                                <div class="form-group mb-3">
                                     <input type="text" class="form-control" id="address" name="address"
                                         placeholder="Enter Address..." value="{{ $property->address }}" required>
                                 </div>

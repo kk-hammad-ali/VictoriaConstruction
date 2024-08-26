@@ -212,12 +212,17 @@
                         for (var id in data) {
                             propertySelect.innerHTML += `<option value="${id}">${data[id]}</option>`;
                         }
+
+                        // Clear flats dropdown when agent changes
+                        document.getElementById('flat_selected').innerHTML =
+                            '<option value="" disabled selected>Select Flat...</option>';
                     });
             });
 
             document.getElementById('property_selected').addEventListener('change', function() {
                 var propertyId = this.value;
-                fetch('/admin/get-flats/' + propertyId)
+                var agentId = document.getElementById('agent').value;
+                fetch('/admin/get-flats/' + propertyId + '?agent_id=' + agentId)
                     .then(response => response.json())
                     .then(data => {
                         var flatSelect = document.getElementById('flat_selected');

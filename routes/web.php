@@ -140,3 +140,7 @@ Route::post('application', [OurTeamController::class, 'store'])->name('public.st
 //Rental Appointment
 Route::get('rental-appointment', [RentalAppointmentController::class, 'index'])->name('rental.appointment');
 Route::post('rental-appointment', [RentalAppointmentController::class, 'store'])->name('rental.appointment.store');
+
+
+
+Route::get('/admin/get-flats/{agentId}', [YourController::class, 'getFlatsByAgent']);

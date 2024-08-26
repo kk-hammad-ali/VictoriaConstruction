@@ -10,7 +10,7 @@ class PropertyController extends Controller
 {
     public function index()
     {
-        $properties = Property::with('user')->get(); // Load the user relationship
+        $properties = Property::all(); // Load the user relationship
         return view('admin.properties.all-properties', compact('properties'));
     }
 
@@ -50,7 +50,6 @@ class PropertyController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'agent' => 'required|string|max:255',
             'address' => 'required|string|max:255',
         ]);
 

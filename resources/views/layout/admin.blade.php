@@ -56,6 +56,32 @@
                 </div>
             </li>
             <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#property"
+                    aria-expanded="true" aria-controls="property">
+                    <i class="fas fa-fw fa-home"></i>
+                    <span>Property</span>
+                </a>
+                <div id="property" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="{{ route('admin.add_property') }}">Add Property</a>
+                        <a class="collapse-item" href="{{ route('admin.all_property') }}">All Property</a>
+                    </div>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#flat"
+                    aria-expanded="true" aria-controls="flat">
+                    <i class="fas fa-fw fa-building"></i>
+                    <span>Flat</span>
+                </a>
+                <div id="flat" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="{{ route('admin.add_flat') }}">Add Flat</a>
+                        <a class="collapse-item" href="{{ route('admin.all_flat') }}">All Flat</a>
+                    </div>
+                </div>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#clients"
                     aria-expanded="true" aria-controls="clients">
                     <i class="fas fa-fw fa-user"></i>
@@ -71,33 +97,6 @@
                         <a class="collapse-item" href="{{ route('admin.add_old_client') }}">Add Old Tenant</a>
                         <a class="collapse-item" href="{{ route('admin.add_old_client_data') }}">Add Old Tenant
                             Data</a>
-                    </div>
-                </div>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#property"
-                    aria-expanded="true" aria-controls="property">
-                    <i class="fas fa-fw fa-home"></i>
-                    <span>Property</span>
-                </a>
-                <div id="property" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="{{ route('admin.add_property') }}">Add Property</a>
-                        <a class="collapse-item" href="{{ route('admin.all_property') }}">All Property</a>
-                    </div>
-                </div>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#flat"
-                    aria-expanded="true" aria-controls="flat">
-                    <i class="fas fa-fw fa-building"></i>
-                    <span>Flat</span>
-                </a>
-                <div id="flat" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="{{ route('admin.add_flat') }}">Add Flat</a>
-                        <a class="collapse-item" href="{{ route('admin.all_flat') }}">All Flat</a>
                     </div>
                 </div>
             </li>

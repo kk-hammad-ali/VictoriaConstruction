@@ -11,7 +11,7 @@ class AgentController extends Controller
 {
     public function index()
     {
-        $agents = User::where('role', 1)->with(['properties.flats'])->get();
+        $agents = User::where('role', 1)->with('flats')->get();
 
         return view('admin.agents.all-agents', compact('agents'));
     }
@@ -76,6 +76,7 @@ class AgentController extends Controller
 
     public function update(Request $request, $id)
     {
+
         $agent = User::where('role', 1)->findOrFail($id);
 
         $validated = $request->validate([
@@ -87,6 +88,8 @@ class AgentController extends Controller
             'phone' => 'required|string|max:15',
             'address' => 'required|string|max:255',
         ]);
+
+
 
         $data = $request->all();
 
@@ -102,6 +105,7 @@ class AgentController extends Controller
             $file->move(public_path('images'), $filename);
             $data['picture'] = 'images/' . $filename;
         }
+
 
         $agent->update($data);
 

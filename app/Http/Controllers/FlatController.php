@@ -37,12 +37,12 @@ class FlatController extends Controller
         return redirect()->route('admin.all_flat')->with('success', 'Flat added successfully.');
     }
 
-
     public function editFlat($id)
     {
         $flat = Flat::findOrFail($id);
         $properties = Property::all();
-        return view('admin.flat.edit-flat', compact('flat', 'properties'));
+        $agents = User::where('role', 1)->get(); // Assuming role 1 is for agents
+        return view('admin.flat.edit-flat', compact('flat', 'properties', 'agents'));
     }
 
     public function update(Request $request, $id)
@@ -51,6 +51,7 @@ class FlatController extends Controller
 
         $validated = $request->validate([
             'property' => 'required|exists:properties,id',
+            'user_id' => 'required|exists:users,id',
             'flat_number' => 'required|string|max:255',
             'floor' => 'required|string|max:255',
             'rent' => 'required|numeric',
@@ -58,6 +59,7 @@ class FlatController extends Controller
 
         $flat->update([
             'property_id' => $request->property,
+            'user_id' => $request->user_id,
             'flat_number' => $request->flat_number,
             'floor' => $request->floor,
             'rent' => $request->rent,
@@ -65,6 +67,7 @@ class FlatController extends Controller
 
         return redirect()->route('admin.all_flat')->with('success', 'Flat updated successfully.');
     }
+
 
     public function destroy($id)
     {

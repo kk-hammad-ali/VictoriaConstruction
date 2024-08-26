@@ -54,10 +54,8 @@
                                     <td>{{ $agent->phone }}</td>
                                     <td>{{ $agent->address }}</td>
                                     <td>
-                                        @foreach ($agent->properties as $property)
-                                            @foreach ($property->flats as $flat)
-                                                {{ $flat->flat_number }}{{ !$loop->last ? ', ' : '' }}
-                                            @endforeach
+                                        @foreach ($agent->flats as $flat)
+                                            {{ $flat->flat_number }}{{ !$loop->last ? ', ' : '' }}
                                         @endforeach
                                     </td>
                                     <td>

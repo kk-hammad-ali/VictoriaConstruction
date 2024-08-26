@@ -50,4 +50,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(Property::class);
     }
+
+    // In User.php model
+    public function flats()
+    {
+        return $this->hasMany(Flat::class);
+    }
+
 }

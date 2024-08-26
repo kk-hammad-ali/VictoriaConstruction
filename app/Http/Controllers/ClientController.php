@@ -96,17 +96,25 @@ class ClientController extends Controller
         return view('agent.client.paid-clients', compact('clients'));
     }
 
-
     public function adminAddClient()
     {
         $agents = User::where('role', 1)->pluck('name', 'id');
-        return view('admin.clients.add-clients', compact('agents'));
+        $properties = Property::all();
+        return view('admin.clients.add-clients', compact('agents', 'properties'));
     }
+
+    public function getFlatsByAgent($agentId)
+    {
+        $flats = Flat::where('user_id', $agentId)->pluck('flat_number', 'id');
+        return response()->json($flats);
+    }
+
 
     public function adminOldAddClient()
     {
         $agents = User::where('role', 1)->pluck('name', 'id');
-        return view('admin.clients.old-clients', compact('agents'));
+        $properties = Property::all();
+        return view('admin.clients.add-clients', compact('agents', 'properties'));
     }
 
     public function adminOldDataAddClient()
@@ -203,7 +211,6 @@ class ClientController extends Controller
 
     public function storeClient(Request $request)
     {
-                // Validate the request data
                 $validated = $request->validate([
                     'agent' => 'required|exists:users,id',
                     'property' => 'required|exists:properties,id',
@@ -221,6 +228,77 @@ class ClientController extends Controller
                     'primary_phoneNo' => 'required|string|max:15',
                     'secondary_phoneNo' => 'nullable|string|max:15',
 
+                ]);
+
+        $picturePath = null;
+        if ($request->hasFile('picture')) {
+            $file = $request->file('picture');
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('images/clients/'), $filename);
+            $picturePath = 'images/clients/' . $filename;
+        }
+
+        $licensePicturePath = null;
+        if ($request->hasFile('license_picture')) {
+            $file = $request->file('license_picture');
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('images/license/'), $filename);
+            $licensePicturePath = 'images/license/' . $filename;
+        }
+
+        $client = new Client();
+        $client->client_name = $request->input('client_name');
+        $client->client_id = $request->input('client_id');
+        $client->client_email = $request->input('client_email');
+        $client->identification_type = $request->input('identification_type');
+        $client->address = $request->input('address');
+        $client->country = $request->input('country');
+        $client->agent_id = $request->input('agent');
+        $client->property_id = $request->input('property');
+        $client->flat_id = $request->input('flat');
+        $client->picture = $picturePath;
+        $client->license_picture = $licensePicturePath;
+        $client->start_date = $request->input('start_date');
+        $client->end_date = $request->input('end_date');
+        $client->primary_phoneNo = $request->input('primary_phoneNo');
+        $client->secondary_phoneNo = $request->input('secondary_phoneNo', null);
+        $client->status = 0;
+        $client->client_status = 1;
+
+        $client->save();
+
+        // Update the flat status to rented (1)
+        $flat = Flat::find($request->input('flat'));
+        if ($flat) {
+            $flat->status = 1; // Set status to rented
+            $flat->save();
+        }
+
+        // Redirect with success message
+        return redirect()->route('admin.unpaid_client')->with('success_clients', 'Client added successfully.');
+    }
+
+
+    public function storeOldClient(Request $request)
+    {
+                // Validate the request data
+                $validated = $request->validate([
+                    'agent' => 'required|exists:users,id',
+                    'property' => 'required|exists:properties,id',
+                    'flat' => 'required|exists:flats,id',
+                    'identification_type' => 'required|string|max:255',
+                    'license_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:8192',
+                    'client_name' => 'required|string|max:255',
+                    'client_id' => 'required|string|max:255|unique:clients,client_id',
+                    'client_email' => 'required|string|email|max:255|unique:clients,client_email',
+                    'address' => 'required|string|max:255',
+                    'country' => 'required|string|max:255',
+                    'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:8192',
+                    'start_date' => 'required|date',
+                    'end_date' => 'required|date|after_or_equal:start_date',
+                    'primary_phoneNo' => 'required|string|max:15',
+                    'secondary_phoneNo' => 'nullable|string|max:15',
+                    'client_status' => 'required|boolean',
                 ]);
 
         // Handle picture upload
@@ -258,82 +336,7 @@ class ClientController extends Controller
         $client->end_date = $request->input('end_date');
         $client->primary_phoneNo = $request->input('primary_phoneNo');
         $client->secondary_phoneNo = $request->input('secondary_phoneNo', null);
-        $client->status = 0; // Default status value
-        $client->client_status = 1; // Default client status (living)
-
-        // Save the client
-        $client->save();
-
-        // Update the flat status to rented (1)
-        $flat = Flat::find($request->input('flat'));
-        if ($flat) {
-            $flat->status = 1; // Set status to rented
-            $flat->save();
-        }
-
-        // Redirect with success message
-        return redirect()->route('admin.unpaid_client')->with('success_clients', 'Client added successfully.');
-    }
-
-
-    public function storeOldClient(Request $request)
-    {
-                // Validate the request data
-                $validated = $request->validate([
-                    'agent' => 'required|exists:users,id',
-                    'property' => 'required|exists:properties,id',
-                    'flat' => 'required|exists:flats,id',
-                    'identification_type' => 'required|string|max:255',
-                    'license_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:8192',
-                    'client_name' => 'required|string|max:255',
-                    'client_id' => 'required|string|max:255|unique:clients,client_id',
-                    'client_email' => 'required|string|email|max:255|unique:clients,client_email',
-                    'address' => 'required|string|max:255',
-                    'country' => 'required|string|max:255',
-                    'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:8192',
-                    'start_date' => 'required|date',  // Validate start date
-                    'end_date' => 'required|date|after_or_equal:start_date',
-                    'primary_phoneNo' => 'required|string|max:15',
-                    'secondary_phoneNo' => 'nullable|string|max:15',
-                    'client_status' => 'required|boolean',
-                ]);
-
-        // Handle picture upload
-        $picturePath = null;
-        if ($request->hasFile('picture')) {
-            $file = $request->file('picture');
-            $filename = time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('images/clients/'), $filename);
-            $picturePath = 'images/clients/' . $filename;
-        }
-
-        // Handle license picture upload
-        $licensePicturePath = null;
-        if ($request->hasFile('license_picture')) {
-            $file = $request->file('license_picture');
-            $filename = time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('images/license/'), $filename);
-            $licensePicturePath = 'images/license/' . $filename;
-        }
-
-        // Create a new Client instance
-        $client = new Client();
-        $client->client_name = $request->input('client_name');
-        $client->client_id = $request->input('client_id');
-        $client->client_email = $request->input('client_email');
-        $client->identification_type = $request->input('identification_type');
-        $client->address = $request->input('address');
-        $client->country = $request->input('country');
-        $client->agent_id = $request->input('agent'); // Foreign key for agent
-        $client->property_id = $request->input('property'); // Foreign key for property
-        $client->flat_id = $request->input('flat'); // Foreign key for flat
-        $client->picture = $picturePath; // Store picture path
-        $client->license_picture = $licensePicturePath; // Store license picture path
-        $client->start_date = $request->input('start_date'); // Store start date
-        $client->end_date = $request->input('end_date');
-        $client->primary_phoneNo = $request->input('primary_phoneNo');
-        $client->secondary_phoneNo = $request->input('secondary_phoneNo', null);
-        $client->status = 0; // Default status value
+        $client->status = 0;
         $client->client_status = $request->input('client_status');
 
         // Save the client
@@ -526,7 +529,7 @@ class ClientController extends Controller
             'country' => $request->input('country'),
         ]);
 
-        return redirect()->route('admin.edit_client', $client->id)->with('success_clients_edit', 'Client updated successfully');
+        return redirect()->route('admin.all_client', $client->id)->with('success_clients_edit', 'Client updated successfully');
     }
 
 
