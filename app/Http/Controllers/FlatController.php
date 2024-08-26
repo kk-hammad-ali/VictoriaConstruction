@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Flat;
 use App\Models\Property;
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class FlatController extends Controller
 {
@@ -16,27 +17,26 @@ class FlatController extends Controller
     public function adminAddFlat()
     {
         $properties = Property::all();
-        return view('admin.flat.add-flat', compact('properties'));
+        $agents = User::where('role', 1)->pluck('name', 'id');
+        return view('admin.flat.add-flat', compact('properties', 'agents'));
     }
 
     public function store(Request $request)
     {
+        // dd('fpnr');
         $validated = $request->validate([
-            'property' => 'required|exists:properties,id',
+            'property_id' => 'required|exists:properties,id',
+            'user_id' => 'required',
             'flat_number' => 'required|string|max:255',
             'floor' => 'required|string|max:255',
             'rent' => 'required|numeric',
         ]);
-
-        Flat::create([
-            'property_id' => $request->property,
-            'flat_number' => $request->flat_number,
-            'floor' => $request->floor,
-            'rent' => $request->rent,
-        ]);
+        // dd('fpnr');
+        Flat::create($validated);
 
         return redirect()->route('admin.all_flat')->with('success', 'Flat added successfully.');
     }
+
 
     public function editFlat($id)
     {

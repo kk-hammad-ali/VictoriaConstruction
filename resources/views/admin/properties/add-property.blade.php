@@ -24,7 +24,7 @@
                                         </span>
                                     @enderror
                                 </div>
-                                <div class="form-group mb-3">
+                                {{-- <div class="form-group mb-3">
                                     <select class="form-control @error('user_id') is-invalid @enderror" id="agent"
                                         name="user_id" required>
                                         <option value="" disabled {{ old('user_id') ? '' : 'selected' }}>Select Agent
@@ -39,7 +39,7 @@
                                             <strong>{{ $message }}</strong>
                                         </span>
                                     @enderror
-                                </div>
+                                </div> --}}
                                 <div class="form-group mb-3">
                                     <input type="text" class="form-control @error('address') is-invalid @enderror"
                                         id="address" name="address" placeholder="Enter Address..."

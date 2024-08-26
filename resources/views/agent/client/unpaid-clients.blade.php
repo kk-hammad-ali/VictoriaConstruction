@@ -53,8 +53,8 @@
                                     </td>
                                     <td>
                                         @if ($client->license_picture)
-                                            <img src="{{ asset($client->license_picture) }}" alt="{{ $client->license_picture }}"
-                                                width="50">
+                                            <img src="{{ asset($client->license_picture) }}"
+                                                alt="{{ $client->license_picture }}" width="50">
                                         @else
                                             <img src="{{ asset('images/default-profile.png') }}" alt="Default Picture"
                                                 width="50">
@@ -145,7 +145,7 @@
             });
 
             // Show success modal if session success is present
-            @if(session('success'))
+            @if (session('success'))
                 const successModal = new bootstrap.Modal(document.getElementById('successModal'));
                 successModal.show();
             @endif

@@ -14,6 +14,7 @@
                                 <th>Sr. No</th>
                                 <th>Flat Number</th>
                                 <th>Property</th>
+                                <th>Agent</th>
                                 <th>Floor</th>
                                 <th>Rent</th>
                                 <th>Status</th>
@@ -26,6 +27,7 @@
                                     <td>{{ $index + 1 }}</td>
                                     <td>{{ $flat->flat_number }}</td>
                                     <td>{{ $flat->property->name }}</td>
+                                    <td>{{ $flat->user->name ?? 'N/A' }}</td>
                                     <td>{{ $flat->floor }}</td>
                                     <td>{{ $flat->rent }}</td>
                                     <td>{{ $flat->status == 1 ? 'Rented' : 'Not Rented' }}</td>

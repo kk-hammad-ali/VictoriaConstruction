@@ -13,24 +13,27 @@
                             <tr>
                                 <th>Sr. No</th>
                                 <th>Name</th>
-                                <th>Agent</th>
+                                {{-- <th>Agent</th> --}}
                                 <th>Address</th>
                                 <th>Options</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($properties as $index => $property)
+                            @foreach ($properties as $index => $property)
                                 <tr>
                                     <td>{{ $index + 1 }}</td>
                                     <td>{{ $property->name }}</td>
-                                    <td>{{ $property->user->name ?? 'N/A' }}</td> 
+                                    {{-- <td>{{ $property->user->name ?? 'N/A' }}</td>  --}}
                                     <td>{{ $property->address }}</td>
                                     <td>
-                                        <a href="{{ route('admin.edit_property', $property->id) }}" class="btn btn-warning">Edit</a>
-                                        <form action="{{ route('admin.delete_property', $property->id) }}" method="POST" style="display:inline;">
+                                        <a href="{{ route('admin.edit_property', $property->id) }}"
+                                            class="btn btn-warning">Edit</a>
+                                        <form action="{{ route('admin.delete_property', $property->id) }}" method="POST"
+                                            style="display:inline;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this property?');">Delete</button>
+                                            <button type="submit" class="btn btn-danger"
+                                                onclick="return confirm('Are you sure you want to delete this property?');">Delete</button>
                                         </form>
                                     </td>
                                 </tr>

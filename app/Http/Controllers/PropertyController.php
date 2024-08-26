@@ -17,8 +17,8 @@ class PropertyController extends Controller
 
     public function adminAddProperty()
     {
-        $agents = User::where('role', 1)->pluck('name', 'id');
-        return view('admin.properties.add-property', compact('agents'));
+        // $agents = User::where('role', 1)->pluck('name', 'id');
+        return view('admin.properties.add-property');
     }
 
 
@@ -26,7 +26,7 @@ class PropertyController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'user_id' => 'required|exists:users,id', // Validate that the user_id exists in the users table
+            // 'user_id' => 'required|exists:users,id', // Validate that the user_id exists in the users table
             'address' => 'required|string|max:255',
         ]);
 

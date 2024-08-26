@@ -13,14 +13,14 @@ class Property extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'user_id', 'address',
+        'name', 'address',
     ];
 
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
+    // public function user()
+    // {
+    //     return $this->belongsTo(User::class);
+    // }
 
     public function flats()
     {

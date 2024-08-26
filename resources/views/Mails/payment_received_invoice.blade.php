@@ -65,7 +65,7 @@
 
             <div class="row mb-4">
                 <div class="col-md-6">
-                    <h4>Client Details</h4>
+                    <h4>Tenants Details</h4>
                     <p><strong>Name:</strong> {{ $client->client_name }}</p>
                     <p><strong>Email:</strong> {{ $client->client_email }}</p>
                     <p><strong>Address:</strong> {{ $client->address }}, {{ $client->country }}</p>
