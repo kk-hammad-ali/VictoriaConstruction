@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Client;
 use App\Models\History;
+use App\Models\Rent;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -66,27 +67,37 @@ class HistoryController extends Controller
         // Fetch the client's history records based on the email
         $clientHistory = History::where('client_email', $id)->get();
 
+        // Fetch the client IDs from the history records
+        $clientIds = $clientHistory->pluck('client_id');
+
+        // Fetch the clients with their related agent and flat data
+        $clients = Client::with('agent', 'flat')->whereIn('id', $clientIds)->get();
+
+        // Fetch the rent records associated with the clients
+        $rents = Rent::whereIn('client_id', $clientIds)->get();
+
         // Prepare the CSV data with the correct headers
         $csvData = [
-            ['Sr. No', 'Name', 'Email', 'Primary Phone Number', 'Address', 'Country', 'Agent Name', 'Flat No', 'Flat Rented', 'Amount Received', 'Remaining Balance', 'Rent Payment Date'],
+            ['Sr. No', 'Name', 'Agent Name', 'Flat No', 'Flat Rented', 'Amount Received', 'Remaining Balance', 'Rent Payment Date'],
         ];
 
         // Populate the CSV data
-        foreach ($clientHistory as $key => $client) {
-            $csvData[] = [
-                $key + 1,
-                $client->client_name,
-                $client->client_email,
-                $client->primary_phoneNo,
-                $client->address,
-                $client->country,
-                $client->agent_name ?? 'N/A',
-                $client->flat_number ?? 'N/A',
-                $client->flat_rent ?? 'N/A',
-                $client->amount_received ?? 'N/A',
-                $client->remaining_balance ?? 'N/A',
-                $client->payment_date ?? 'N/A',
-            ];
+        foreach ($clients as $key => $client) {
+            // Get the rent records for the client
+            $clientRents = $rents->where('client_id', $client->id);
+
+            foreach ($clientRents as $rent) {
+                $csvData[] = [
+                    $key + 1,
+                    $client->client_name,
+                    $client->agent->name ?? 'N/A',
+                    $client->flat->flat_number ?? 'N/A',
+                    $client->flat->rent ?? 'N/A',
+                    $rent->amount_received ?? 'N/A',
+                    $rent->remaining_balance ?? 'N/A',
+                    $rent->payment_date ? \Carbon\Carbon::parse($rent->payment_date)->format('Y-m-d') : 'N/A',
+                ];
+            }
         }
 
         // Define the filename
@@ -112,15 +123,26 @@ class HistoryController extends Controller
         return Response::download($filename, $filename, $headers);
     }
 
+
     public function downloadPdf($id)
     {
         // Fetch the client's history records based on the email
         $clientHistory = History::where('client_email', $id)->get();
 
+        // Fetch the client IDs from the history records
+        $clientIds = $clientHistory->pluck('client_id');
+
+        // Fetch the clients with their related agent and flat data
+        $clients = Client::with('agent', 'flat')->whereIn('id', $clientIds)->get();
+
+        // Fetch the rent records associated with the clients
+        $rents = Rent::whereIn('client_id', $clientIds)->get();
+
         // Prepare the data for the PDF
         $pdfData = [
-            'clients' => $clientHistory,
-            'clientName' => $clientHistory->first()->client_name ?? 'Unknown',
+            'clients' => $clients,
+            'rents' => $rents,
+            'clientName' => $clients->first()->client_name ?? 'Unknown',
         ];
 
         // Load the view with the data
@@ -132,5 +154,31 @@ class HistoryController extends Controller
         // Return the PDF file as a download
         return $pdf->download($filename);
     }
+
+
+    public function viewHistory($id)
+{
+    // Fetch the client's history records based on the email
+    $clientHistory = History::where('client_email', $id)->get();
+
+    // Fetch the client IDs
+    $clientIds = $clientHistory->pluck('client_id');
+
+    // Fetch the clients and their related data
+    $clients = Client::with('agent', 'flat')->whereIn('id', $clientIds)->get();
+
+    // Fetch the rent records associated with the client
+    $rents = Rent::whereIn('client_id', $clientIds)->get();
+
+    // Prepare the data for the view
+    $viewData = [
+        'clients' => $clients,
+        'rents' => $rents,
+        'clientName' => $clients->first()->client_name ?? 'Unknown',
+    ];
+
+    // Return the view with the data
+    return view('admin.history.history-pdf', $viewData);
+}
 
 }

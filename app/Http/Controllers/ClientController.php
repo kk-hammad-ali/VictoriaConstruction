@@ -114,7 +114,7 @@ class ClientController extends Controller
     {
         $agents = User::where('role', 1)->pluck('name', 'id');
         $properties = Property::all();
-        return view('admin.clients.add-clients', compact('agents', 'properties'));
+        return view('admin.clients.old-clients', compact('agents', 'properties'));
     }
 
     public function adminOldDataAddClient()

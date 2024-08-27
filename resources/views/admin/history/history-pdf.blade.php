@@ -44,20 +44,28 @@
         </thead>
         <tbody>
             @foreach ($clients as $key => $client)
-                <tr>
-                    <td>{{ $key + 1 }}</td>
-                    <td>{{ $client->client_name }}</td>
-                    <td>{{ $client->client_email }}</td>
-                    <td>{{ $client->primary_phoneNo }}</td>
-                    <td>{{ $client->address }}</td>
-                    <td>{{ $client->country }}</td>
-                    <td>{{ $client->agent_name ?? 'N/A' }}</td>
-                    <td>{{ $client->flat_number ?? 'N/A' }}</td>
-                    <td>${{ $client->flat_rent ?? 'N/A' }}</td>
-                    <td>${{ $client->amount_received ?? 'N/A' }}</td>
-                    <td>${{ $client->remaining_balance ?? 'N/A' }}</td>
-                    <td>{{ $client->payment_date ?? 'N/A' }}</td>
-                </tr>
+                @foreach ($rents->where('client_id', $client->id) as $rent)
+                    <tr>
+                        <td>{{ $key + 1 }}</td>
+                        <td>{{ $client->client_name }}</td>
+                        <td>{{ $client->client_email }}</td>
+                        <td>{{ $client->primary_phoneNo }}</td>
+                        <td>{{ $client->address }}</td>
+                        <td>{{ $client->country }}</td>
+                        <td>{{ $client->agent->name ?? 'N/A' }}</td>
+                        <td>{{ $client->flat->flat_number ?? 'N/A' }}</td>
+                        <td>${{ $client->flat->rent ?? 'N/A' }}</td>
+                        <td>${{ $rent->amount_received ?? 'N/A' }}</td>
+                        <td>${{ $rent->remaining_balance ?? 'N/A' }}</td>
+                        <td>
+                            @if ($rent->payment_date)
+                                {{ \Carbon\Carbon::parse($rent->payment_date)->format('Y-m-d') }}
+                            @else
+                                N/A
+                            @endif
+                        </td>
+                    </tr>
+                @endforeach
             @endforeach
         </tbody>
     </table>

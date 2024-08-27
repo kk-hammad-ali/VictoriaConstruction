@@ -14,6 +14,17 @@ class Rent extends Model
     /**
      * Get the client that owns the rent record.
      */
+
+    /**
+     * The attributes that should be cast to dates.
+     *
+     * @var array
+     */
+
+     protected $casts = [
+        'payment_date' => 'datetime',
+    ];
+
     public function client()
     {
         return $this->belongsTo(Client::class);

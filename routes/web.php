@@ -33,6 +33,8 @@ Route::post('/admin/pay-rent', [ClientController::class, 'payRent'])->middleware
 Route::get('/admin/history', [HistoryController::class, 'showHistory'])->middleware('admin')->name('admin.showHistory');
 Route::get('/clients/download-csv/{id}', [HistoryController::class, 'downloadCsv'])->name('history.downloadCsv');
 Route::get('history/downloadPdf/{id}', [HistoryController::class, 'downloadPdf'])->name('history.downloadPdf');
+Route::get('history/viewHistory/{id}', [HistoryController::class, 'viewHistory'])->name('history.viewHistory');
+
 
 // Mails and Invoice
 Route::get('/send-received-invoice/{clientId}', [MailController::class, 'sendReceivedInvoice'])

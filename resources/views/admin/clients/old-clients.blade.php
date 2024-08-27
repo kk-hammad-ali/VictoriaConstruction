@@ -29,13 +29,20 @@
                                     <div class="text-danger mt-2">{{ $message }}</div>
                                 @enderror
                             </div>
+
                             <div class="form-group mb-3">
-                                <label for="property_selected">Select Property</label>
+                                <label for="agent">Select Property</label>
                                 <select class="form-control @error('property') is-invalid @enderror" id="property_selected"
                                     name="property" required>
                                     <option value="" disabled selected>Select Property...</option>
+                                    @foreach ($properties as $property)
+                                        <option value="{{ $property->id }}"
+                                            {{ old('property') == $property->id ? 'selected' : '' }}>
+                                            {{ $property->name }}
+                                        </option>
+                                    @endforeach
                                 </select>
-                                @error('property')
+                                @error('agent')
                                     <div class="text-danger mt-2">{{ $message }}</div>
                                 @enderror
                             </div>

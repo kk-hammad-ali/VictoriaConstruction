@@ -97,7 +97,9 @@
                     <p class="h5 mb-0"><strong>Total:</strong> $ {{ $client->flat->rent }}</p>
                 </div>
             </div>
+            <strong>Note: In case of late payment a fine of £50 will be charged</strong>
         </div>
+
     </div>
 </body>
 
