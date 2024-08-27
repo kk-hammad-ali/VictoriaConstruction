@@ -29,7 +29,7 @@
                                     <td>{{ $flat->property->name }}</td>
                                     <td>{{ $flat->user->name ?? 'N/A' }}</td>
                                     <td>{{ $flat->floor }}</td>
-                                    <td>{{ $flat->rent }}</td>
+                                    <td>₤ {{ $flat->rent }}</td>
                                     <td>{{ $flat->status == 1 ? 'Rented' : 'Not Rented' }}</td>
                                     <td>
                                         <div class="d-flex">

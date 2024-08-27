@@ -54,9 +54,9 @@
                         <td>{{ $client->country }}</td>
                         <td>{{ $client->agent->name ?? 'N/A' }}</td>
                         <td>{{ $client->flat->flat_number ?? 'N/A' }}</td>
-                        <td>${{ $client->flat->rent ?? 'N/A' }}</td>
-                        <td>${{ $rent->amount_received ?? 'N/A' }}</td>
-                        <td>${{ $rent->remaining_balance ?? 'N/A' }}</td>
+                        <td>₤ {{ $client->flat->rent ?? 'N/A' }}</td>
+                        <td>₤ {{ $rent->amount_received ?? 'N/A' }}</td>
+                        <td>₤ {{ $rent->remaining_balance ?? 'N/A' }}</td>
                         <td>
                             @if ($rent->payment_date)
                                 {{ \Carbon\Carbon::parse($rent->payment_date)->format('Y-m-d') }}

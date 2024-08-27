@@ -98,7 +98,7 @@
                     <div class="paid-stamp">PAID</div>
                 </div>
                 <div class="col-12 col-md-6 text-end">
-                    <p class="h5 mb-0"><strong>Total:</strong> $ {{ $client->flat->rent }}</p>
+                    <p class="h5 mb-0"><strong>Total:</strong> ₤ {{ $client->flat->rent }}</p>
                 </div>
             </div>
         </div>

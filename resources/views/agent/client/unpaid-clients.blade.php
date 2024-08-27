@@ -69,7 +69,7 @@
                                     <td>{{ $client->secondary_phoneNo ?? 'N/A' }}</td>
                                     <td>{{ $client->agent->name ?? 'N/A' }}</td>
                                     <td>{{ $client->flat->flat_number ?? 'N/A' }}</td>
-                                    <td>${{ $client->flat->rent ?? 'N/A' }}</td>
+                                    <td>₤{{ $client->flat->rent ?? 'N/A' }}</td>
                                     <td>{{ $client->start_date }}</td> <!-- Display Start Date -->
                                     <td>{{ $client->end_date }}</td> <!-- Display End Date -->
                                     {{-- <td>

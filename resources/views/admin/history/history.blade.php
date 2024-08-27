@@ -47,7 +47,6 @@
                                 <th>Flat Rented</th>
                                 <th>Total Amount Received</th>
                                 <th>Total Remaining Balance</th>
-                                <th>Rent Payment Date</th>
                                 <th>Option</th>
                             </tr>
                         </thead>
@@ -58,10 +57,9 @@
                                     <td>{{ $client->client_name }}</td>
                                     <td>{{ $client->agent_name ?? 'N/A' }}</td>
                                     <td>{{ $client->flat_number ?? 'N/A' }}</td>
-                                    <td>${{ $client->flat_rent ?? 'N/A' }}</td>
-                                    <td>${{ $client->total_amount_received ?? 'N/A' }}</td>
-                                    <td>${{ $client->total_remaining_balance ?? 'N/A' }}</td>
-                                    <td>{{ $client->payment_date ?? 'N/A' }}</td>
+                                    <td>₤{{ $client->flat_rent ?? 'N/A' }}</td>
+                                    <td>₤{{ $client->total_amount_received ?? 'N/A' }}</td>
+                                    <td>₤{{ $client->total_remaining_balance ?? 'N/A' }}</td>
                                     <td>
                                         <div class="csv-download-btn">
                                             <a href="{{ route('history.downloadCsv', ['id' => $client->client_email]) }}"

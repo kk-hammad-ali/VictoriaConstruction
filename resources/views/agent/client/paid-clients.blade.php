@@ -48,8 +48,8 @@
                                     </td>
                                     <td>
                                         @if ($client->license_picture)
-                                            <img src="{{ asset($client->license_picture) }}" alt="{{ $client->license_picture }}"
-                                                width="50">
+                                            <img src="{{ asset($client->license_picture) }}"
+                                                alt="{{ $client->license_picture }}" width="50">
                                         @else
                                             <img src="{{ asset('images/default-profile.png') }}" alt="Default Picture"
                                                 width="50">
@@ -64,7 +64,7 @@
                                     <td>{{ $client->secondary_phoneNo ?? 'N/A' }}</td>
                                     <td>{{ $client->agent->name ?? 'N/A' }}</td>
                                     <td>{{ $client->flat->flat_number ?? 'N/A' }}</td>
-                                    <td>${{ $client->flat->rent ?? 'N/A' }}</td>
+                                    <td>₤{{ $client->flat->rent ?? 'N/A' }}</td>
                                     <td>{{ $client->start_date }}</td> <!-- Display Start Date -->
                                     <td>{{ $client->end_date }}</td> <!-- Display End Date -->
                                     {{-- <td>
