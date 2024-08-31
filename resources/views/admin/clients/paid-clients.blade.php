@@ -1,6 +1,6 @@
 @extends('layout.admin')
 
-@section('title', 'All Clients')
+@section('title', 'All Tenant')
 
 @section('content')
     <style>
@@ -20,15 +20,15 @@
                             <tr>
                                 <th>Sr. No</th>
                                 <th>Name</th>
-                                <th>Picture</th>
+                                {{-- <th>Picture</th>
                                 <th>License Picture</th>
                                 <th>Identification Type</th>
-                                <th>Identification ID</th>
+                                <th>Identification ID</th> --}}
                                 <th>Email</th>
-                                <th>Address</th>
-                                <th>Country</th>
+                                {{-- <th>Address</th>
+                                <th>Country</th> --}}
                                 <th>Primary Phone Number</th>
-                                <th>Secondary Phone Number</th>
+                                {{-- <th>Secondary Phone Number</th> --}}
                                 <th>Agent Name</th>
                                 <th>Flat Rented</th>
                                 <th>Rent Amount</th>
@@ -42,7 +42,7 @@
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
                                     <td>{{ $client->client_name }}</td>
-                                    <td>
+                                    {{-- <td>
                                         @if ($client->picture)
                                             <img src="{{ asset($client->picture) }}" alt="{{ $client->client_name }}"
                                                 width="50">
@@ -59,14 +59,14 @@
                                             <img src="{{ asset('images/default-profile.png') }}" alt="Default Picture"
                                                 width="50">
                                         @endif
-                                    </td>
-                                    <td>{{ $client->identification_type }}</td>
-                                    <td>{{ $client->client_id }}</td>
+                                    </td> --}}
+                                    {{-- <td>{{ $client->identification_type }}</td> --}}
+                                    {{-- <td>{{ $client->client_id }}</td> --}}
                                     <td>{{ $client->client_email }}</td>
-                                    <td>{{ $client->address }}</td>
-                                    <td>{{ $client->country }}</td>
+                                    {{-- <td>{{ $client->address }}</td> --}}
+                                    {{-- <td>{{ $client->country }}</td> --}}
                                     <td>{{ $client->primary_phoneNo }}</td> <!-- Display Primary Phone Number -->
-                                    <td>{{ $client->secondary_phoneNo ?? 'N/A' }}</td>
+                                    {{-- <td>{{ $client->secondary_phoneNo ?? 'N/A' }}</td> --}}
                                     <td>{{ $client->agent->name ?? 'N/A' }}</td>
                                     <td>{{ $client->flat->flat_number ?? 'N/A' }}</td>
                                     <td>₤{{ $client->flat->rent ?? 'N/A' }}</td>

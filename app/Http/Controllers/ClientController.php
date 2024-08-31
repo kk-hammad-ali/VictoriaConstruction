@@ -196,13 +196,11 @@ class ClientController extends Controller
         return view('admin.clients.all-clients', compact('clients'));
     }
 
-
-
     public function agentAddClient()
     {
         $agentId = auth()->user()->id;
         $agent = auth()->user()->name;
-        $properties = Property::where('user_id', $agentId)->pluck('name', 'id');
+        $properties = Property::all();
         $flats = Flat::whereIn('property_id', $properties->keys())->pluck('flat_number', 'id');
 
         return view('agent.client.add-client', compact('agent','agentId', 'properties', 'flats'));

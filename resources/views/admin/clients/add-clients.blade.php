@@ -1,6 +1,6 @@
     @extends('layout.admin')
 
-    @section('title', 'Add Client')
+    @section('title', 'Add Tenant')
 
     @section('content')
 
